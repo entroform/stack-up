@@ -1,15 +1,15 @@
 import {
   StringUtil,
-} from '../rocket';
+} from '@nekobird/rocket';
 
 import {
   StackUp,
   StackUpItem,
-} from './stackUp';
+} from './stack-up';
 
 import {
   StackUpConfig,
-} from './stackUpConfig';
+} from './stack-up-config';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';
 

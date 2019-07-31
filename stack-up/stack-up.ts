@@ -9,11 +9,11 @@ import {
   STACKUP_DEFAULT_CONFIG,
   StackUpConfig,
   StackUpContainerScaleData,
-} from './stackUpConfig';
+} from './stack-up-config';
 
 import {
   StackUpLayout,
-} from './stackUpLayout';
+} from './stack-up-layout';
 
 export interface StackUpItem {
   item: HTMLElement;

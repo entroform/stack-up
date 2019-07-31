@@ -13,7 +13,7 @@
     "target": "ES2015",
   },
   "include": [
-    "source/*",
+    "stack-up/*",
   ],
   "exclude": [
     "node_modules",

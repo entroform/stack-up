@@ -1,6 +1,6 @@
 import {
   StackUpItem,
-} from './stackUp';
+} from './stack-up';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';
 
