@@ -27,6 +27,9 @@ export interface StackUpItem {
 
 export class StackUp {
 
+  public containerElement?: HTMLElement;
+  public itemElements?: HTMLElement[];
+
   public boundaryHeight: number = 0;
   public boundaryWidth: number = 0;
 
@@ -75,41 +78,37 @@ export class StackUp {
   }
 
   private getElements(): this {
-    this.getContainer();
-    this.getItems();
+    this.getContainerElement();
+    this.getItemElements();
     return this;
   }
 
-  private getContainer(): this {
-    if (
-      typeof this.config.container === 'undefined'
-      && typeof this.config.containerSelector === 'string'
-    ) {
-      const container = document.querySelector(this.config.containerSelector);
-      if (container !== null) {
-        this.config.container = <HTMLElement>container;
-        return this;
+  private getContainerElement(): this {
+    if (typeof this.containerElement === 'undefined') {
+      const containerElement = this.config.getContainerElement();
+      if (containerElement === null) {
+        throw new Error('StackUp: Fail to get container element.');
+      } else {
+        this.containerElement = containerElement;
       }
-      throw new Error('StackUp: Fail to get container.');
     }
-    if (typeof this.config.container === 'object') return this;
-    throw new Error('StackUp: Container not defined.');
+    return this;
   }
 
-  private getItems(): this {
-    if (
-      typeof this.config.items === 'undefined'
-      && typeof this.config.itemsSelector === 'string'
-    ) {
-      const items: NodeListOf<HTMLElement> = document.querySelectorAll(this.config.itemsSelector);
-      if (items !== null) {
-        this.config.items = Array.from(items);
-        return this;
+  private getItemElements(): this {
+    if (typeof this.itemElements === 'undefined') {
+      const itemElements = this.config.getItemElements();
+      if (itemElements === null) {
+        throw new Error('StackUp: Fail to get item elements.');
+      } else {
+        if (Array.isArray(itemElements) === true) {
+          this.itemElements = itemElements as HTMLElement[];
+        } else {
+          this.itemElements = Array.from(itemElements);
+        }
       }
-      throw new Error('StackUp: Fail to get items.');
     }
-    if (typeof this.config.items === 'object') return this;
-    throw new Error('StackUp: items not defined.');
+    return this;
   }
 
   private boundaryUpdate(): this {
@@ -161,9 +160,9 @@ export class StackUp {
   // Required stack-up.initialize to be called first.
 
   public updatePreviousContainerSize(): this {
-    if (typeof this.config.container === 'object') {
-      this.previousContainerWidth = this.config.container.offsetWidth;
-      this.previousContainerHeight = this.config.container.offsetHeight;
+    if (typeof this.containerElement === 'object') {
+      this.previousContainerWidth = this.containerElement.offsetWidth;
+      this.previousContainerHeight = this.containerElement.offsetHeight;
     }
     return this;
   }
@@ -171,8 +170,8 @@ export class StackUp {
   // This only updates this.items, it does not update the selectors
 
   private appendItem(item: HTMLElement): this {
-    if (typeof this.config.container === 'object') {
-      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this.config.container);
+    if (typeof this.containerElement === 'object') {
+      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this.containerElement);
       this.items.push(
         {
           item,
@@ -191,8 +190,8 @@ export class StackUp {
   private populateItems(): this {
     // Clear items before populating
     this.items = [];
-    if (typeof this.config.items !== 'undefined')
-      this.config.items.forEach(item => this.appendItem(item));
+    if (typeof this.itemElements !== 'undefined')
+      this.itemElements.forEach(item => this.appendItem(item));
     return this;
   }
 
@@ -229,7 +228,7 @@ export class StackUp {
   public async draw(): Promise<void> {
     if (
       this.isTransitioning === false
-      && typeof this.config.container === 'object'
+      && typeof this.containerElement === 'object'
     ) {
       this.isTransitioning = true;
 
@@ -242,13 +241,13 @@ export class StackUp {
       this.prepareItemsBeforeMove();
       try {
         await this.config.beforeTransition(scaleData, this.items);
-        await this.config.scaleContainerInitial(this.config.container, scaleData);
+        await this.config.scaleContainerInitial(this.containerElement, scaleData);
         await this.config.beforeMove(this.items);
         await this.moveItems();
         await this.config.afterMove(this.items);
         this.updatePreviousContainerSize();
         await this.config.scaleContainerFinal(
-          this.config.container,
+          this.containerElement,
           this.composeContainerScaleData(finalWidth, finalHeight)
         );
         this.endTransition();
