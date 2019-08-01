@@ -1,1 +1,19 @@
 @import 'reset';
+
+
+#container {
+  box-sizing: border-box;
+  padding: 1rem;
+  position: relative;
+  width: 800px;
+  border: 1px solid black;
+
+  .item {
+    width: 200px;
+    position: absolute;
+
+    img {
+      width: 100%;
+    }
+  }
+}

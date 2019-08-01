@@ -19,5 +19,14 @@
   "homepage": "https://github.com/nekobird/stack-up#readme",
   "dependencies": {
     "@nekobird/rocket": "0.0.114"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/plugin-transform-typescript": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "sass": "^1.22.9",
+    "typescript": "^3.5.3"
   }
 }

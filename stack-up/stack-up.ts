@@ -84,28 +84,24 @@ export class StackUp {
   }
 
   private getContainerElement(): this {
-    if (typeof this.containerElement === 'undefined') {
-      const containerElement = this.config.getContainerElement();
-      if (containerElement === null) {
-        throw new Error('StackUp: Fail to get container element.');
-      } else {
-        this.containerElement = containerElement;
-      }
+    const containerElement = this.config.getContainerElement();
+    if (containerElement === null) {
+      throw new Error('StackUp: Fail to get container element.');
+    } else {
+      this.containerElement = containerElement;
     }
     return this;
   }
 
   private getItemElements(): this {
-    if (typeof this.itemElements === 'undefined') {
-      const itemElements = this.config.getItemElements();
-      if (itemElements === null) {
-        throw new Error('StackUp: Fail to get item elements.');
+    const itemElements = this.config.getItemElements();
+    if (itemElements === null) {
+      throw new Error('StackUp: Fail to get item elements.');
+    } else {
+      if (Array.isArray(itemElements) === true) {
+        this.itemElements = itemElements as HTMLElement[];
       } else {
-        if (Array.isArray(itemElements) === true) {
-          this.itemElements = itemElements as HTMLElement[];
-        } else {
-          this.itemElements = Array.from(itemElements);
-        }
+        this.itemElements = Array.from(itemElements);
       }
     }
     return this;
