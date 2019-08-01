@@ -1,12 +1,10 @@
 import {
-  DOMUtil,
   DOMImage,
 } from '@nekobird/rocket';
 
 import {
   StackUp,
 } from '../../../stack-up/stack-up';
-
 
 const containerElement = document.getElementById('container');
 
@@ -17,6 +15,7 @@ const images = [
   'https://images.unsplash.com/photo-1507984211203-76701d7bb120?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
 ];
 
+// Require to pass image object because firefox does not cache images based on URL apparently.
 const onImageLoad: (url: string) => Promise<any> = url => {
   return new Promise(resolve => {
     const image = new Image();
