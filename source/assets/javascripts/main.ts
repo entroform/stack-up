@@ -16,29 +16,27 @@ const images = [
 ];
 
 // Require to pass image object because firefox does not cache images based on URL apparently.
-const onImageLoad: (url: string) => Promise<any> = url => {
+const onImageLoad: (source: string) => Promise<any> = source => {
   return new Promise(resolve => {
     const image = new Image();
     image.addEventListener('load', () => {
-      resolve({ image, url });
+      resolve({ image, source });
     });
-    image.src = url;
+    image.src = source;
   });
 }
 
-const loadImages = (stackup) => {
+const loadImages = stackup => {
   images.forEach(image => {
     onImageLoad(image)
     .then(payload => {
-      const img = document.createElement('IMG');
-      img.setAttribute('src', payload.url);
       const item = document.createElement('DIV');
       item.classList.add('item');
       item.appendChild(payload.image);
       containerElement.appendChild(item);
       stackup
         .append(item)
-        .catch((error) => alert(error));
+        .catch(error => console.error(error));
     });
   });
 }
@@ -63,18 +61,17 @@ const stackup: StackUp = new StackUp({
   moveInSequence: false,
   columnWidth: 200,
   numberOfColumns: 3,
-  isFluid: false,
+  isFluid: true,
   boundary: window,
 
   scaleContainerInitial: (container, data) => {
     if (data.requireScale === true) {
-      console.log(data);
       container.style.width = `${data.width}px`;
       container.style.height = `${data.height}px`;
     }
     return Promise.resolve()
   },
-  moveItem: (data) => {
+  moveItem: data => {
     if (data.requireMove === true) {
       data.item.style.left = `${data.left}px`;
       data.item.style.top = `${data.top}px`;
@@ -85,5 +82,7 @@ const stackup: StackUp = new StackUp({
 
 stackup.initialize().then(() => {
   loadImages(stackup);
-});
 
+  stackup.config.gutter = 40;
+  stackup.restack();
+});
