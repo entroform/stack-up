@@ -42,7 +42,6 @@ export interface StackUpConfig {
   beforeMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
   moveItem: (item: StackUpItem, stackup: StackUp) => Promise<void>;
   afterMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
-  
 }
 
 export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {

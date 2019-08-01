@@ -201,8 +201,13 @@ export class StackUp {
   private populateItems(): this {
     // Clear items before populating
     this.items = [];
-    if (typeof this.itemElements !== 'undefined')
-      this.itemElements.forEach(item => this.appendItem(item));
+    if (Array.isArray(this.itemElements) === true) {
+      const itemElements = this.itemElements as HTMLElement[];
+      itemElements.forEach(item => {
+        if (DOMUtil.isHTMLElement(item) === true)
+          this.appendItem(item);
+      });
+    }
     return this;
   }
 
@@ -300,7 +305,7 @@ export class StackUp {
   }
 
   private composeContainerScaleData(width: number, height: number): StackUpContainerScaleData  {
-    const maxWidth = Math.max(this.previousContainerWidth,  width);
+    const maxWidth = Math.max(this.previousContainerWidth, width);
     const maxHeight = Math.max(this.previousContainerHeight, height);
     const requireScale = (
       this.previousContainerWidth !== width
@@ -308,7 +313,7 @@ export class StackUp {
     );
     return {
       width, height,
-      currentWidth : this.previousContainerWidth,
+      currentWidth: this.previousContainerWidth,
       currentHeight: this.previousContainerHeight,
       maxWidth, maxHeight,
       requireScale,
@@ -319,7 +324,7 @@ export class StackUp {
     this.items.forEach(item => {
       const requireMove: boolean = (
         item.currentLeft !== item.left
-        || item.currentTop  !== item.top
+        || item.currentTop !== item.top
       );
       item.requireMove = requireMove;
     });
@@ -339,8 +344,7 @@ export class StackUp {
 
   private applyLayout(): this {
     this.layout.setup();
-    if (this.items.length)
-      this.layout.loop();
+    if (this.items.length) this.layout.loop();
     return this;
   }
 
@@ -385,16 +389,22 @@ export class StackUp {
               if (this.appendItem(item) === true) {
                 this.layout.plot(itemIndex);
               } else {
-                reject(new Error('StackUp.append: item is undefined or is not HTMLElement.'));
+                reject(new Error('StackUp.append: container element is undefined or not HTMLElement.'));
               }
+            } else {
+              reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
             }
           });
-        } else if (DOMUtil.isHTMLElement(items) === true) {
-          const itemIndex = this.items.length;
-          if (this.appendItem(items as HTMLElement) === true) {
-            this.layout.plot(itemIndex);
+        } else {
+          if (DOMUtil.isHTMLElement(items) === true) {
+            const itemIndex = this.items.length;
+            if (this.appendItem(items as HTMLElement) === true) {
+              this.layout.plot(itemIndex);
+            } else {
+              reject(new Error('StackUp.append: container element is undefined or not HTMLElement.'));
+            }
           } else {
-            reject(new Error('StackUp.append: item is undefined or is not HTMLElement.'));
+            reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
           }
         }
         this
