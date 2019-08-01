@@ -1,6 +1,7 @@
 import {
   DOMOffset,
   DOMStyle,
+  DOMUtil,
   Util,
   Viewport,
 } from '@nekobird/rocket';
@@ -17,15 +18,21 @@ import {
 
 export interface StackUpItem {
   item: HTMLElement;
-  height: number;
+
   left: number;
   top: number;
+  height: number;
+
   currentLeft: number;
   currentTop: number;
+
   requireMove: boolean;
 }
 
 export class StackUp {
+
+  public config: StackUpConfig;
+  public layout: StackUpLayout;
 
   public containerElement?: HTMLElement;
   public itemElements?: HTMLElement[];
@@ -39,11 +46,8 @@ export class StackUp {
   public previousContainerWidth: number = 0;
   public previousContainerHeight: number = 0;
 
-  public items: StackUpItem[] = [];
   public numberOfColumns: number = 0;
-
-  public config: StackUpConfig;
-  public layout: StackUpLayout;
+  public items: StackUpItem[] = [];
 
   public resizeDebounceTimeout?: number;
 
@@ -64,17 +68,24 @@ export class StackUp {
   }
 
   public initialize(): Promise<void> {
-    window.addEventListener('resize', this.eventHandlerResize);
-    this.boundaryUpdate();
+    return this.config
+      .beforeInitialize(this)
+      .then(() => {
+        window.removeEventListener('resize', this.eventHandlerResize);
+        window.addEventListener('resize', this.eventHandlerResize);
+    
+        this.boundaryUpdate();
 
-    // Update grid selectors - reset
-    this.getElements();
-    this.populateItems();
+        // Get container and item elements and set them up.
+        this.getElements();
+        this.populateItems();
 
-    // Update grid selectors - stacking
-    this.updateNumberOfColumns();
-    this.applyLayout();
-    return this.draw();
+        // Update layout and stack.
+        this.updateNumberOfColumns();
+        this.applyLayout();
+        return this.draw();
+      })
+      .catch(() => Promise.reject(new Error('StackUp: config.beforeInitialize promise reject.')));
   }
 
   private getElements(): this {
@@ -110,10 +121,9 @@ export class StackUp {
   private boundaryUpdate(): this {
     if (
       this.config.boundary !== window
-      && typeof this.config.boundary === 'object'
-      && this.config.boundary !== null
+      && DOMUtil.isHTMLElement(this.config.boundary) === true
     ) {
-      const boundary = <HTMLElement>this.config.boundary;
+      const boundary = this.config.boundary as HTMLElement;
       let horizontal = 0, vertical = 0;
       if (DOMStyle.getStyleValue(boundary, 'boxSizing') === 'border-box') {
         const horizontalBorderWidths = DOMStyle.getHorizontalBorderWidths(boundary);
@@ -156,30 +166,35 @@ export class StackUp {
   // Required stack-up.initialize to be called first.
 
   public updatePreviousContainerSize(): this {
-    if (typeof this.containerElement === 'object') {
-      this.previousContainerWidth = this.containerElement.offsetWidth;
-      this.previousContainerHeight = this.containerElement.offsetHeight;
+    if (DOMUtil.isHTMLElement(this.containerElement) === true) {
+      const containerElement = this.containerElement as HTMLElement;
+      this.previousContainerWidth = containerElement.offsetWidth;
+      this.previousContainerHeight = containerElement.offsetHeight;
     }
     return this;
   }
 
   // This only updates this.items, it does not update the selectors
 
-  private appendItem(item: HTMLElement): this {
-    if (typeof this.containerElement === 'object') {
-      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this.containerElement);
+  private appendItem(item: HTMLElement): boolean {
+    if (DOMUtil.isHTMLElement(this.containerElement) === true) {
+      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this.containerElement as HTMLElement);
       this.items.push(
         {
           item,
-          height: item.offsetHeight,
+
           left, top,
+          height: item.offsetHeight,
+
           currentLeft: left,
-          currentTop : top,
+          currentTop: top,
+
           requireMove: false,
         }
       );
+      return true;
     }
-    return this;
+    return false;
   }
 
   // Populate grid items (2) - reset
@@ -223,9 +238,11 @@ export class StackUp {
   // Scale container and move items (5) - stack
   public async draw(): Promise<void> {
     if (
-      this.isTransitioning === false
-      && typeof this.containerElement === 'object'
+      this.isTransitioning === false &&
+      DOMUtil.isHTMLElement(this.containerElement) === true
     ) {
+      const containerElement = this.containerElement as HTMLElement;
+
       this.isTransitioning = true;
 
       this.containerWidth = (this.config.columnWidth + this.config.gutter) * this.numberOfColumns;
@@ -233,24 +250,22 @@ export class StackUp {
       const finalHeight = this.containerHeight + this.config.gutter;
       const finalWidth = this.containerWidth + this.config.gutter;
 
-      const scaleData: StackUpContainerScaleData = this.composeContainerScaleData(finalWidth, finalHeight);
+      let containerScaleData = this.composeContainerScaleData(finalWidth, finalHeight);
       this.prepareItemsBeforeMove();
       try {
-        await this.config.beforeTransition(scaleData, this.items);
-        await this.config.scaleContainerInitial(this.containerElement, scaleData);
-        await this.config.beforeMove(this.items);
+        await this.config.beforeTransition(containerScaleData, this.items, this);
+        await this.config.scaleContainerInitial(containerElement, containerScaleData, this);
+        await this.config.beforeMove(this.items, this);
         await this.moveItems();
-        await this.config.afterMove(this.items);
+        await this.config.afterMove(this.items, this);
         this.updatePreviousContainerSize();
-        await this.config.scaleContainerFinal(
-          this.containerElement,
-          this.composeContainerScaleData(finalWidth, finalHeight)
-        );
+        containerScaleData = this.composeContainerScaleData(finalWidth, finalHeight);
+        await this.config.scaleContainerFinal(containerElement, containerScaleData, this);
         this.endTransition();
         return Promise.resolve();
       } catch {
         this.endTransition();
-        return Promise.reject();
+        return Promise.reject(new Error('StackUp.draw: Fail to transition items and container.'));
       }
     }
     return Promise.resolve();
@@ -258,8 +273,8 @@ export class StackUp {
 
   private moveItems(): Promise<void> {
     const moveItem: (item: StackUpItem) => Promise<void> = item => {
-      return this.config.moveItem(item);
-    }
+      return this.config.moveItem(item, this);
+    };
     if (this.config.moveInSequence === true) {
       return Util.promiseEach<StackUpItem>(this.items, moveItem);
     } else {
@@ -335,8 +350,8 @@ export class StackUp {
     return this;
   }
 
-  // This should be called after if any the item(s)
-  // have been modified, added, or removed.
+  // This should be called if any item(s)
+  // is modified, added, or removed.
   public reset(): Promise<void> {
     return new Promise(resolve => {
       const reset = () => {
@@ -359,23 +374,35 @@ export class StackUp {
   }
 
   public append(items: HTMLElement | HTMLElement[]): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+
       const append = () => {
-        if (Array.isArray(items)) {
+        if (Array.isArray(items) === true) {
+          items = items as HTMLElement[];
           items.forEach(item => {
-            const itemIndex: number = this.items.length;
-            this.appendItem(item);
-            this.layout.plot(itemIndex);
+            if (DOMUtil.isHTMLElement(item) === true) {
+              const itemIndex = this.items.length;
+              if (this.appendItem(item) === true) {
+                this.layout.plot(itemIndex);
+              } else {
+                reject(new Error('StackUp.append: item is undefined or is not HTMLElement.'));
+              }
+            }
           });
-        } else {
-          const itemIndex: number = this.items.length;
-          this.appendItem(items);
-          this.layout.plot(itemIndex);
+        } else if (DOMUtil.isHTMLElement(items) === true) {
+          const itemIndex = this.items.length;
+          if (this.appendItem(items as HTMLElement) === true) {
+            this.layout.plot(itemIndex);
+          } else {
+            reject(new Error('StackUp.append: item is undefined or is not HTMLElement.'));
+          }
         }
         this
           .draw()
-          .then(() => resolve());
+          .then(() => resolve())
+          .catch(() => reject());
       };
+
       if (this.isTransitioning === true) {
         this.doneTransitioning = append;
       } else {

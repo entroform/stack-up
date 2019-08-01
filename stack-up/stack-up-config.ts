@@ -1,4 +1,5 @@
 import {
+  StackUp,
   StackUpItem,
 } from './stack-up';
 
@@ -30,13 +31,18 @@ export interface StackUpConfig {
   debounceResizeWait: number;
   moveInSequence: boolean;
 
-  scaleContainerInitial: (container: HTMLElement, data: StackUpContainerScaleData) => Promise<void>;
-  scaleContainerFinal: (container: HTMLElement, data: StackUpContainerScaleData) => Promise<void>;
-  moveItem: (item: StackUpItem) => Promise<void>;
-  beforeTransition: (container: StackUpContainerScaleData, items: StackUpItem[]) => Promise<void>;
-  beforeMove: (items: StackUpItem[]) => Promise<void>;
-  afterMove: (items: StackUpItem[]) => Promise<void>;
+  beforeInitialize: (stackup: StackUp) => Promise<void>;
+
+  beforeTransition: (container: StackUpContainerScaleData, items: StackUpItem[], stackup: StackUp) => Promise<void>;
   afterTransition: () => void;
+
+  scaleContainerInitial: (container: HTMLElement, data: StackUpContainerScaleData, stackup: StackUp) => Promise<void>;
+  scaleContainerFinal: (container: HTMLElement, data: StackUpContainerScaleData, stackup: StackUp) => Promise<void>;
+
+  beforeMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
+  moveItem: (item: StackUpItem, stackup: StackUp) => Promise<void>;
+  afterMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
+  
 }
 
 export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
@@ -55,6 +61,11 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   debounceResizeWait: 350,
   moveInSequence: false,
 
+  beforeInitialize: () => Promise.resolve(),
+
+  beforeTransition: () => Promise.resolve(),
+  afterTransition: () => {},
+
   scaleContainerInitial: (container, { width, height }) => {
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
@@ -66,15 +77,11 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
     return Promise.resolve();
   },
 
+  beforeMove: () => Promise.resolve(),
   moveItem: ({ item, left, top }) => {
     item.style.left = `${left}px`;
     item.style.top = `${top}px`;
     return Promise.resolve();
   },
-
-  beforeTransition: (container, items) => Promise.resolve(),
-  beforeMove: (items) => Promise.resolve(),
-
-  afterMove: (items) => Promise.resolve(),
-  afterTransition: () => {},
+  afterMove: () => Promise.resolve(),
 };

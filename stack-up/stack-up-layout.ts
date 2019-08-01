@@ -48,10 +48,10 @@ export class StackUpLayout {
   }
 
   private plotOrdinal(itemIndex: number) {
-    const config: StackUpConfig = this.stackUp.config;
+    const { config } = this.stackUp;
     this.stackUp.updatePreviousContainerSize();
 
-    const item: StackUpItem = this.stackUp.items[itemIndex];
+    const item = this.stackUp.items[itemIndex];
     item.currentLeft = item.left;
     item.currentTop = item.top;
 
@@ -70,10 +70,11 @@ export class StackUpLayout {
   }
 
   private plotOptimized(itemIndex: number) {
-    const config: StackUpConfig = this.stackUp.config;
+    const { config } = this.stackUp;
     this.stackUp.updatePreviousContainerSize();
 
-    const item: StackUpItem = this.stackUp.items[itemIndex];
+    const item = this.stackUp.items[itemIndex];
+
     item.currentLeft = item.left;
     item.currentTop = item.top;
 
@@ -85,7 +86,7 @@ export class StackUpLayout {
     if (this.stack[0][1] > this.stackUp.containerHeight)
       this.stackUp.containerHeight = this.stack[0][1];
 
-    this.stack.sort((a: number[], b: number[]) => a[1] - b[1]);
+    this.stack.sort((a, b) => a[1] - b[1]);
 
     this.columnPointer++;
 

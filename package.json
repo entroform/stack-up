@@ -4,7 +4,7 @@
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "main": "build/stack-up.js",
   "scripts": {
-    "documentation": "parcel ./source/index.html",
+    "start": "parcel ./source/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

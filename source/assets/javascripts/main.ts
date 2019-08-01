@@ -6,7 +6,18 @@ import {
   StackUp,
 } from '../../../stack-up/stack-up';
 
+
+const containerElement = document.getElementById('container');
+
 const stackup: StackUp = new StackUp({
+  beforeInitialize: () => {
+    const images = containerElement.querySelectorAll('img');
+    const promises = [];
+    images.forEach(img => {
+      promises.push(DOMImage.onImageLoad(img.src));
+    });
+    return Promise.all(promises).then(() => Promise.resolve());
+  },
   getContainerElement: () => {
     return document.getElementById('container');
   },
@@ -37,10 +48,8 @@ const stackup: StackUp = new StackUp({
     return Promise.resolve()
   },
 });
-
 stackup.initialize();
 
-const container = document.getElementById('container');
 
 const images = [
   'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1268&q=80',
@@ -58,8 +67,9 @@ images.forEach(image => {
       const item = document.createElement('DIV');
       item.classList.add('item')
       item.appendChild(img)
-      container.appendChild(item);
-      stackup.append(item);
-      stackup.restack();
+      containerElement.appendChild(item);
+      stackup.append(item)
+        .then(() => stackup.reset())
+        .catch((error) => alert(error));
     });
 });
