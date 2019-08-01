@@ -3,8 +3,14 @@
   "version": "0.0.1",
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "main": "build/stack-up.js",
+  "types": "build/stack-up.d.ts",
+  "files": [
+    "build/**/*"
+  ],
   "scripts": {
     "start": "parcel ./source/index.html",
+    "build": "rm -r build; tsc -t es6 --emitDeclarationOnly; parcel build ./stack-up/stack-up.ts --out-dir build",
+    "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +32,7 @@
     "@babel/plugin-transform-typescript": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
+    "autoprefixer": "^9.6.1",
     "sass": "^1.22.9",
     "typescript": "^3.5.3"
   }
