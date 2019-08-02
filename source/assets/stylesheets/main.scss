@@ -1,5 +1,9 @@
 @import 'reset';
 
+html {
+  box-sizing: border-box;
+  padding: 20px;
+}
 
 #container {
   box-sizing: border-box;
@@ -7,6 +11,7 @@
   position: relative;
   width: 800px;
   border: 1px solid black;
+  margin: 0 auto;
 
   .item {
     width: 200px;

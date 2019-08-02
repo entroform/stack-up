@@ -1,7 +1,13 @@
 {
-  "name": "stack-up",
+  "name": "@nekobird/stack-up",
   "version": "0.0.1",
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
+  "author": "Andrew Prasetya",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nekobird/stack-up.git"
+  },
   "main": "build/stack-up.js",
   "types": "build/stack-up.d.ts",
   "files": [
@@ -13,18 +19,12 @@
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nekobird/stack-up.git"
-  },
-  "author": "Andrew Prasetya",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/nekobird/stack-up/issues"
   },
   "homepage": "https://github.com/nekobird/stack-up#readme",
   "dependencies": {
-    "@nekobird/rocket": "0.0.114"
+    "@nekobird/rocket": "0.0.115"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

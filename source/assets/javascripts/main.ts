@@ -15,20 +15,9 @@ const images = [
   'https://images.unsplash.com/photo-1507984211203-76701d7bb120?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
 ];
 
-// Require to pass image object because firefox does not cache images based on URL apparently.
-const onImageLoad: (source: string) => Promise<any> = source => {
-  return new Promise(resolve => {
-    const image = new Image();
-    image.addEventListener('load', () => {
-      resolve({ image, source });
-    });
-    image.src = source;
-  });
-}
-
 const loadImages = stackup => {
   images.forEach(image => {
-    onImageLoad(image)
+    DOMImage.loadImage(image)
     .then(payload => {
       const item = document.createElement('DIV');
       item.classList.add('item');
@@ -46,7 +35,7 @@ const stackup: StackUp = new StackUp({
     const images = containerElement.querySelectorAll('img');
     const promises = [];
     images.forEach(img => {
-      promises.push(DOMImage.onImageLoad(img.src));
+      promises.push(DOMImage.loadImage(img.src));
     });
     return Promise.all(promises).then(() => Promise.resolve());
   },
