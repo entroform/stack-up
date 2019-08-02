@@ -16,6 +16,7 @@
   "scripts": {
     "start": "parcel ./source/index.html",
     "build": "rm -r build; tsc -t es6 --emitDeclarationOnly; parcel build ./stack-up/stack-up.ts --out-dir build",
+    "build-docs": "rm -r ./docs; parcel build ./source/index.html --out-dir docs --public-url ./",
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -33,6 +34,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
     "autoprefixer": "^9.6.1",
+    "cssnano": "^4.1.10",
     "sass": "^1.22.9",
     "typescript": "^3.5.3"
   }
