@@ -354,29 +354,6 @@ export class StackUp {
     return this;
   }
 
-  // This should be called if any item(s)
-  // is modified, added, or removed.
-  public reset(): Promise<void> {
-    return new Promise(resolve => {
-      const reset = () => {
-        this.containerWidth = 0;
-        this.containerHeight = 0;
-        this.items = [];
-        this
-          .getElements()
-          .populateItems()
-          .resetLayout()
-          .restack()
-        resolve();
-      };
-      if (this.isTransitioning === true) {
-        this.doneTransitioning = reset;
-      } else {
-        reset();
-      }
-    });
-  }
-
   public append(items: HTMLElement | HTMLElement[]): Promise<void> {
     return new Promise((resolve, reject) => {
 
@@ -417,6 +394,29 @@ export class StackUp {
         this.doneTransitioning = append;
       } else {
         append();
+      }
+    });
+  }
+
+  // This should be called if any item(s)
+  // is modified, added, or removed.
+  public reset(): Promise<void> {
+    return new Promise(resolve => {
+      const reset = () => {
+        this.containerWidth = 0;
+        this.containerHeight = 0;
+        this.items = [];
+        this
+          .getElements()
+          .populateItems()
+          .resetLayout()
+          .restack()
+        resolve();
+      };
+      if (this.isTransitioning === true) {
+        this.doneTransitioning = reset;
+      } else {
+        reset();
       }
     });
   }
