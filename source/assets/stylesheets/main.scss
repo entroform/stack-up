@@ -6,12 +6,12 @@ html {
 }
 
 #container {
+  border: 1px solid black;
   box-sizing: border-box;
+  margin: 0 auto;
   padding: 1rem;
   position: relative;
   width: 800px;
-  border: 1px solid black;
-  margin: 0 auto;
 
   .item {
     width: 200px;

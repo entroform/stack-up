@@ -16,8 +16,9 @@ const images = [
 ];
 
 const loadImages = stackup => {
-  images.forEach(image => {
-    DOMImage.loadImage(image)
+  images.forEach(source => {
+    DOMImage
+    .loadImage(source)
     .then(payload => {
       const item = document.createElement('DIV');
       item.classList.add('item');
@@ -58,20 +59,19 @@ const stackup: StackUp = new StackUp({
       container.style.width = `${data.width}px`;
       container.style.height = `${data.height}px`;
     }
-    return Promise.resolve()
+    return Promise.resolve();
   },
   moveItem: data => {
     if (data.requireMove === true) {
       data.item.style.left = `${data.left}px`;
       data.item.style.top = `${data.top}px`;
     }
-    return Promise.resolve()
+    return Promise.resolve();
   },
 });
 
 stackup.initialize().then(() => {
   loadImages(stackup);
-
   stackup.config.gutter = 40;
   stackup.restack();
 });

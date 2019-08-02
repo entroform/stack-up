@@ -12,10 +12,9 @@ $ npm install @nekobird/stack-up
 ## Usage
 
 ```typescript
+
 // Import StackUp.
-import {
-  StackUp,
-} from '@nekobird/stack-up';
+import { StackUp } from '@nekobird/stack-up';
 
 const boundaryElement = document.getElementById('boundary');
 
@@ -71,3 +70,9 @@ const stackup = new StackUp({
   afterMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
 });
 ```
+
+## Append
+
+## Reset
+
+## Restack
