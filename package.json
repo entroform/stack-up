@@ -18,7 +18,8 @@
     "build": "rm -r build; tsc -t es6 --emitDeclarationOnly; parcel build ./stack-up/stack-up.ts --out-dir build",
     "build-docs": "rm -r ./docs; parcel build ./source/index.html --out-dir docs --public-url ./",
     "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -r dist; rm -r build; rm -r .cache"
   },
   "bugs": {
     "url": "https://github.com/nekobird/stack-up/issues"
@@ -37,5 +38,6 @@
     "cssnano": "^4.1.10",
     "sass": "^1.22.9",
     "typescript": "^3.5.3"
-  }
+  },
+  "browserslist": "> 1%, not dead"
 }
