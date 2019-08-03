@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "author": "Andrew Prasetya",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nekobird/stack-up.git"
