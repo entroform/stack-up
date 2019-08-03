@@ -18,14 +18,11 @@ import {
 
 export interface StackUpItem {
   item: HTMLElement;
-
   left: number;
   top: number;
   height: number;
-
   currentLeft: number;
   currentTop: number;
-
   requireMove: boolean;
 }
 
@@ -182,13 +179,10 @@ export class StackUp {
       this.items.push(
         {
           item,
-
           left, top,
           height: item.offsetHeight,
-
           currentLeft: left,
           currentTop: top,
-
           requireMove: false,
         }
       );
@@ -288,8 +282,8 @@ export class StackUp {
         moveItems.push(moveItem(item));
       });
       return Promise
-        .all(moveItems)
-        .then(() => Promise.resolve());
+      .all(moveItems)
+      .then(() => Promise.resolve());
     }
   }
 
@@ -385,9 +379,9 @@ export class StackUp {
           }
         }
         this
-          .draw()
-          .then(() => resolve())
-          .catch(() => reject());
+        .draw()
+        .then(() => resolve())
+        .catch(() => reject());
       };
 
       if (this.isTransitioning === true) {
@@ -407,10 +401,10 @@ export class StackUp {
         this.containerHeight = 0;
         this.items = [];
         this
-          .getElements()
-          .populateItems()
-          .resetLayout()
-          .restack()
+        .getElements()
+        .populateItems()
+        .resetLayout()
+        .restack()
         resolve();
       };
       if (this.isTransitioning === true) {
@@ -425,10 +419,10 @@ export class StackUp {
     return new Promise(resolve => {
       const restack = () => {
         this
-          .updateNumberOfColumns()
-          .resetLayout()
-          .applyLayout()
-          .draw();
+        .updateNumberOfColumns()
+        .resetLayout()
+        .applyLayout()
+        .draw();
         resolve();
       };
       if (this.isTransitioning === true) {

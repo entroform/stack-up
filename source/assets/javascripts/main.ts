@@ -10,7 +10,7 @@ const containerElement = document.getElementById('container');
 
 const images = [
   'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1268&q=80',
-  'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
+  'https://images.unsplash.com/photo-1545249390-6bdfa286032f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1197&q=80',
   'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
   'https://images.unsplash.com/photo-1507984211203-76701d7bb120?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60',
 ];
@@ -25,8 +25,8 @@ const loadImages = stackup => {
       item.appendChild(payload.image);
       containerElement.appendChild(item);
       stackup
-        .append(item)
-        .catch(error => console.error(error));
+      .append(item)
+      .catch(error => console.error(error));
     });
   });
 }
@@ -70,8 +70,10 @@ const stackup: StackUp = new StackUp({
   },
 });
 
-stackup.initialize().then(() => {
+stackup
+.initialize()
+.then(() => {
   loadImages(stackup);
-  stackup.config.gutter = 40;
+  stackup.config.gutter = 10;
   stackup.restack();
 });
