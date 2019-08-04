@@ -11,11 +11,43 @@ $ npm install @nekobird/stack-up
 
 ## Usage
 
+Import it into your project.
+
 ```typescript
-
-// Import StackUp.
 import { StackUp } from '@nekobird/stack-up';
+```
 
+## Example HTML and CSS setup
+
+Basic HTML setup.
+
+```html
+<div id="js-stackup-container" class="grid__container">
+  <div class="grid__item">...</div>
+  <div class="grid__item">...</div>
+  <div class="grid__item">...</div>
+</div>
+```
+
+Minimum CSS requirements.
+
+```css
+.grid__container {
+  position: relative
+}
+
+.grid__item {
+  position: absolute;
+}
+
+.grid__item img {
+  width: 100%;
+}
+```
+
+## Config
+
+```typescript
 const boundaryElement = document.getElementById('boundary');
 
 // StackUp takes in a config object.
