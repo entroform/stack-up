@@ -29,7 +29,7 @@ Basic HTML setup.
 </div>
 ```
 
-Minimum CSS requirements.
+Some basic CSS setup.
 
 ```css
 .grid__container {
@@ -84,14 +84,45 @@ const stackup = new StackUp({
   isFluid: false,
   
   // This debounce wait time is in ms.
-  debounceResizeWait: 250;
+  debounceResizeWait: 250,
 
+  // This works 
+  moveInSequence: false,
 
-  moveInSequence: boolean;
+  // This function takes in a StackUp object.
+  // This returns a Promise object.
+  beforeInitialize: stackup => Promise.resolve(),
 
-  beforeInitialize: (stackup: StackUp) => Promise<void>;
+  // beforeTransition
+  // scaleContainerInitial
+  // beforeMove
+  // moveItem
+  // afterMove
+  // scaleContainerFinal
+  // afterTransition
 
-  beforeTransition: (container: StackUpContainerScaleData, items: StackUpItem[], stackup: StackUp) => Promise<void>;
+  // containerInstruction
+  // StackUpContainerScaleData
+  // currentWidth
+  // currentHeight
+  // maxWidth
+  // maxHeight
+  // width
+  // height
+  // requireScale
+
+  // StackUpItem
+  // This is an array of 
+  // item: HTMLElement;
+  // left: number;
+  // top: number;
+  // height: number;
+  // currentLeft: number;
+  // currentTop: number;
+  // requireMove: boolean;
+
+  beforeTransition: (containerInstruction: StackUpContainerScaleData, items: StackUpItem[], stackup: StackUp) => Promise<void>;
+
   afterTransition: () => void;
 
   scaleContainerInitial: (container: HTMLElement, data: StackUpContainerScaleData, stackup: StackUp) => Promise<void>;

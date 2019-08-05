@@ -55,6 +55,7 @@ const stackup: StackUp = new StackUp({
   boundary: window,
 
   scaleContainerInitial: (container, data) => {
+    console.log(data);
     if (data.requireScale === true) {
       container.style.width = `${data.width}px`;
       container.style.height = `${data.height}px`;
