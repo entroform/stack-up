@@ -1,11 +1,13 @@
-# stack-up 🏗
+# 🏗 stack-up
 
-A powerful and optimized way of stacking fixed width and variable height elements.
+A simple yet powerful tool to neatly stack fixed width and variable height elements.
+
 Powered by [@nekobird/rocket](https://github.com/nekobird/rocket).
 
 ## Install
 
-Install via npm:
+Add **stack-up** to your project.
+
 ```
 npm install @nekobird/stack-up
 ```
