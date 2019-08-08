@@ -73,7 +73,11 @@ export class StackUp {
         this.applyLayout();
         return this.draw();
       })
-      .catch(() => Promise.reject(new Error('StackUp: config.beforeInitialize promise reject.')));
+      .catch(() =>
+        Promise.reject(
+          new Error('@nekobird/stack-up: StackUp.config.beforeInitialize promise reject.'),
+        ),
+      );
   }
 
   private getElements(): this {
@@ -85,7 +89,9 @@ export class StackUp {
   private getContainerElement(): this {
     const containerElement = this.config.getContainerElement();
     if (containerElement === null) {
-      throw new Error('StackUp: Fail to get container element.');
+      throw new Error(
+        '@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.',
+      );
     } else {
       this.containerElement = containerElement;
     }
@@ -95,7 +101,7 @@ export class StackUp {
   private getItemElements(): this {
     const itemElements = this.config.getItemElements();
     if (itemElements === null) {
-      throw new Error('StackUp: Fail to get item elements.');
+      throw new Error('@nekobird/stack-up: StackUp.getItemElements: Fail to get item elements.');
     } else {
       if (Array.isArray(itemElements) === true) {
         this.itemElements = itemElements as HTMLElement[];
@@ -239,7 +245,9 @@ export class StackUp {
         return Promise.resolve();
       } catch {
         this.endTransition();
-        return Promise.reject(new Error('StackUp.draw: Fail to transition items and container.'));
+        return Promise.reject(
+          new Error('@nekobird/stack-up: StackUp.draw: Fail to transition items and container.'),
+        );
       }
     }
     return Promise.resolve();
@@ -330,11 +338,17 @@ export class StackUp {
                 this.layout.plot(itemIndex);
               } else {
                 reject(
-                  new Error('StackUp.append: container element is undefined or not HTMLElement.'),
+                  new Error(
+                    '@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.',
+                  ),
                 );
               }
             } else {
-              reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
+              reject(
+                new Error(
+                  '@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.',
+                ),
+              );
             }
           });
         } else {
@@ -344,11 +358,17 @@ export class StackUp {
               this.layout.plot(itemIndex);
             } else {
               reject(
-                new Error('StackUp.append: container element is undefined or not HTMLElement.'),
+                new Error(
+                  '@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.',
+                ),
               );
             }
           } else {
-            reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
+            reject(
+              new Error(
+                '@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.',
+              ),
+            );
           }
         }
         this.draw()
