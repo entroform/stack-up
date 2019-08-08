@@ -1,10 +1,4 @@
-import {
-  DOMOffset,
-  DOMStyle,
-  DOMUtil,
-  Util,
-  Viewport,
-} from '@nekobird/rocket';
+import { DOMOffset, DOMStyle, DOMUtil, Util, Viewport } from '@nekobird/rocket';
 
 import {
   STACKUP_DEFAULT_CONFIG,
@@ -12,9 +6,7 @@ import {
   StackUpContainerScaleData,
 } from './stack-up-config';
 
-import {
-  StackUpLayout,
-} from './stack-up-layout';
+import { StackUpLayout } from './stack-up-layout';
 
 export interface StackUpItem {
   item: HTMLElement;
@@ -27,7 +19,6 @@ export interface StackUpItem {
 }
 
 export class StackUp {
-
   public config: StackUpConfig;
   public layout: StackUpLayout;
 
@@ -39,7 +30,7 @@ export class StackUp {
 
   public containerWidth: number = 0;
   public containerHeight: number = 0;
-  
+
   public previousContainerWidth: number = 0;
   public previousContainerHeight: number = 0;
 
@@ -70,7 +61,7 @@ export class StackUp {
       .then(() => {
         window.removeEventListener('resize', this.eventHandlerResize);
         window.addEventListener('resize', this.eventHandlerResize);
-    
+
         this.boundaryUpdate();
 
         // Get container and item elements and set them up.
@@ -116,12 +107,10 @@ export class StackUp {
   }
 
   private boundaryUpdate(): this {
-    if (
-      this.config.boundary !== window
-      && DOMUtil.isHTMLElement(this.config.boundary) === true
-    ) {
+    if (this.config.boundary !== window && DOMUtil.isHTMLElement(this.config.boundary) === true) {
       const boundary = this.config.boundary as HTMLElement;
-      let horizontal = 0, vertical = 0;
+      let horizontal = 0,
+        vertical = 0;
       if (DOMStyle.getStyleValue(boundary, 'boxSizing') === 'border-box') {
         const horizontalBorderWidths = DOMStyle.getHorizontalBorderWidths(boundary);
         const horizontalPaddings = DOMStyle.getHorizontalPaddings(boundary);
@@ -142,22 +131,17 @@ export class StackUp {
   private resizeDebounce = (fn: Function, delay: number): void => {
     clearTimeout(this.resizeDebounceTimeout);
     this.resizeDebounceTimeout = window.setTimeout(fn, delay);
-  }
+  };
 
   private eventHandlerResizeComplete = (): void => {
-    if (
-      this.calculateNumberOfColumns() !== this.numberOfColumns
-      && this.config.isFluid === true
-    ) this.restack();
-  }
+    if (this.calculateNumberOfColumns() !== this.numberOfColumns && this.config.isFluid === true)
+      this.restack();
+  };
 
   private eventHandlerResize = (event: Event): void => {
     this.boundaryUpdate();
-    this.resizeDebounce(
-      this.eventHandlerResizeComplete,
-      this.config.debounceResizeWait
-    );
-  }
+    this.resizeDebounce(this.eventHandlerResizeComplete, this.config.debounceResizeWait);
+  };
 
   // Update grid selectors. (1) - reset
   // Required stack-up.initialize to be called first.
@@ -175,17 +159,17 @@ export class StackUp {
 
   private appendItem(item: HTMLElement): boolean {
     if (DOMUtil.isHTMLElement(this.containerElement) === true) {
-      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this.containerElement as HTMLElement);
-      this.items.push(
-        {
-          item,
-          left, top,
-          height: item.offsetHeight,
-          currentLeft: left,
-          currentTop: top,
-          requireMove: false,
-        }
-      );
+      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this
+        .containerElement as HTMLElement);
+      this.items.push({
+        item,
+        left,
+        top,
+        height: item.offsetHeight,
+        currentLeft: left,
+        currentTop: top,
+        requireMove: false,
+      });
       return true;
     }
     return false;
@@ -198,8 +182,7 @@ export class StackUp {
     if (Array.isArray(this.itemElements) === true) {
       const itemElements = this.itemElements as HTMLElement[];
       itemElements.forEach(item => {
-        if (DOMUtil.isHTMLElement(item) === true)
-          this.appendItem(item);
+        if (DOMUtil.isHTMLElement(item) === true) this.appendItem(item);
       });
     }
     return this;
@@ -210,21 +193,16 @@ export class StackUp {
 
     if (this.config.isFluid === true) {
       numberOfColumns = Math.floor(
-        (this.boundaryWidth - this.config.gutter) /
-        (this.config.columnWidth + this.config.gutter)
+        (this.boundaryWidth - this.config.gutter) / (this.config.columnWidth + this.config.gutter),
       );
     } else {
       numberOfColumns = this.config.numberOfColumns;
     }
 
-    if (numberOfColumns > this.items.length)
-      numberOfColumns = this.items.length;
+    if (numberOfColumns > this.items.length) numberOfColumns = this.items.length;
 
-    if (
-      this.items.length === 0
-      || numberOfColumns <= 0
-    ) numberOfColumns = 1;
-    
+    if (this.items.length === 0 || numberOfColumns <= 0) numberOfColumns = 1;
+
     return numberOfColumns;
   }
 
@@ -236,10 +214,7 @@ export class StackUp {
 
   // Scale container and move items (5) - stack
   public async draw(): Promise<void> {
-    if (
-      this.isTransitioning === false &&
-      DOMUtil.isHTMLElement(this.containerElement) === true
-    ) {
+    if (this.isTransitioning === false && DOMUtil.isHTMLElement(this.containerElement) === true) {
       const containerElement = this.containerElement as HTMLElement;
 
       this.isTransitioning = true;
@@ -281,9 +256,7 @@ export class StackUp {
       this.items.forEach(item => {
         moveItems.push(moveItem(item));
       });
-      return Promise
-      .all(moveItems)
-      .then(() => Promise.resolve());
+      return Promise.all(moveItems).then(() => Promise.resolve());
     }
   }
 
@@ -298,28 +271,25 @@ export class StackUp {
     return this;
   }
 
-  private composeContainerScaleData(width: number, height: number): StackUpContainerScaleData  {
+  private composeContainerScaleData(width: number, height: number): StackUpContainerScaleData {
     const maxWidth = Math.max(this.previousContainerWidth, width);
     const maxHeight = Math.max(this.previousContainerHeight, height);
-    const requireScale = (
-      this.previousContainerWidth !== width
-      || this.previousContainerHeight !== height
-    );
+    const requireScale =
+      this.previousContainerWidth !== width || this.previousContainerHeight !== height;
     return {
-      width, height,
+      width,
+      height,
       currentWidth: this.previousContainerWidth,
       currentHeight: this.previousContainerHeight,
-      maxWidth, maxHeight,
+      maxWidth,
+      maxHeight,
       requireScale,
     };
   }
 
   private prepareItemsBeforeMove(): this {
     this.items.forEach(item => {
-      const requireMove: boolean = (
-        item.currentLeft !== item.left
-        || item.currentTop !== item.top
-      );
+      const requireMove: boolean = item.currentLeft !== item.left || item.currentTop !== item.top;
       item.requireMove = requireMove;
     });
     return this;
@@ -350,7 +320,6 @@ export class StackUp {
 
   public append(items: HTMLElement | HTMLElement[]): Promise<void> {
     return new Promise((resolve, reject) => {
-
       const append = () => {
         if (Array.isArray(items) === true) {
           items = items as HTMLElement[];
@@ -360,7 +329,9 @@ export class StackUp {
               if (this.appendItem(item) === true) {
                 this.layout.plot(itemIndex);
               } else {
-                reject(new Error('StackUp.append: container element is undefined or not HTMLElement.'));
+                reject(
+                  new Error('StackUp.append: container element is undefined or not HTMLElement.'),
+                );
               }
             } else {
               reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
@@ -372,16 +343,17 @@ export class StackUp {
             if (this.appendItem(items as HTMLElement) === true) {
               this.layout.plot(itemIndex);
             } else {
-              reject(new Error('StackUp.append: container element is undefined or not HTMLElement.'));
+              reject(
+                new Error('StackUp.append: container element is undefined or not HTMLElement.'),
+              );
             }
           } else {
             reject(new Error('StackUp.append: item is undefined or not HTMLElement.'));
           }
         }
-        this
-        .draw()
-        .then(() => resolve())
-        .catch(() => reject());
+        this.draw()
+          .then(() => resolve())
+          .catch(() => reject());
       };
 
       if (this.isTransitioning === true) {
@@ -400,11 +372,10 @@ export class StackUp {
         this.containerWidth = 0;
         this.containerHeight = 0;
         this.items = [];
-        this
-        .getElements()
-        .populateItems()
-        .resetLayout()
-        .restack()
+        this.getElements()
+          .populateItems()
+          .resetLayout()
+          .restack();
         resolve();
       };
       if (this.isTransitioning === true) {
@@ -418,11 +389,10 @@ export class StackUp {
   public restack(): Promise<void> {
     return new Promise(resolve => {
       const restack = () => {
-        this
-        .updateNumberOfColumns()
-        .resetLayout()
-        .applyLayout()
-        .draw();
+        this.updateNumberOfColumns()
+          .resetLayout()
+          .applyLayout()
+          .draw();
         resolve();
       };
       if (this.isTransitioning === true) {

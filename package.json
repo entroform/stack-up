@@ -22,6 +22,7 @@
     "build-docs": "rm -r ./docs; parcel build ./source/index.html --out-dir docs --public-url ./",
     "clean": "rm -r dist; rm -r build; rm -r .cache",
     "prepare": "npm run build",
+    "prettier": "prettier --write 'stack-up/**/*.ts'",
     "start": "parcel ./source/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -37,6 +38,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "autoprefixer": "^9.6.1",
     "cssnano": "^4.1.10",
+    "prettier": "^1.18.2",
     "sass": "^1.22.9",
     "typescript": "^3.5.3"
   }

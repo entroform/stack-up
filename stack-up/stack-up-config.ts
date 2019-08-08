@@ -1,7 +1,4 @@
-import {
-  StackUp,
-  StackUpItem,
-} from './stack-up';
+import { StackUp, StackUpItem } from './stack-up';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';
 
@@ -24,20 +21,32 @@ export interface StackUpConfig {
   columnWidth: number;
   numberOfColumns: number;
   gutter: number;
-  
+
   layout: StackUpLayoutOption;
   isFluid: boolean;
-  
+
   debounceResizeWait: number;
   moveInSequence: boolean;
 
   beforeInitialize: (stackup: StackUp) => Promise<void>;
 
-  beforeTransition: (container: StackUpContainerScaleData, items: StackUpItem[], stackup: StackUp) => Promise<void>;
+  beforeTransition: (
+    container: StackUpContainerScaleData,
+    items: StackUpItem[],
+    stackup: StackUp,
+  ) => Promise<void>;
   afterTransition: () => void;
 
-  scaleContainerInitial: (container: HTMLElement, data: StackUpContainerScaleData, stackup: StackUp) => Promise<void>;
-  scaleContainerFinal: (container: HTMLElement, data: StackUpContainerScaleData, stackup: StackUp) => Promise<void>;
+  scaleContainerInitial: (
+    container: HTMLElement,
+    data: StackUpContainerScaleData,
+    stackup: StackUp,
+  ) => Promise<void>;
+  scaleContainerFinal: (
+    container: HTMLElement,
+    data: StackUpContainerScaleData,
+    stackup: StackUp,
+  ) => Promise<void>;
 
   beforeMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
   moveItem: (item: StackUpItem, stackup: StackUp) => Promise<void>;

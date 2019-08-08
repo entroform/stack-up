@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "sourceMap": false,
     "strict": true,
-    "target": "ES2015",
+    "target": "ES2015"
   },
   "include": [
     "stack-up/*",

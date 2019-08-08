@@ -1,10 +1,6 @@
-import {
-  DOMImage,
-} from '@nekobird/rocket';
+import { DOMImage } from '@nekobird/rocket';
 
-import {
-  StackUp,
-} from '../../../stack-up/stack-up';
+import { StackUp } from '../../../stack-up/stack-up';
 
 const containerElement = document.getElementById('container');
 
@@ -17,19 +13,15 @@ const images = [
 
 const loadImages = stackup => {
   images.forEach(source => {
-    DOMImage
-    .loadImage(source)
-    .then(payload => {
+    DOMImage.loadImage(source).then(payload => {
       const item = document.createElement('DIV');
       item.classList.add('item');
       item.appendChild(payload.image);
       containerElement.appendChild(item);
-      stackup
-      .append(item)
-      .catch(error => console.error(error));
+      stackup.append(item).catch(error => console.error(error));
     });
   });
-}
+};
 
 const stackup: StackUp = new StackUp({
   beforeInitialize: () => {
@@ -71,9 +63,7 @@ const stackup: StackUp = new StackUp({
   },
 });
 
-stackup
-.initialize()
-.then(() => {
+stackup.initialize().then(() => {
   loadImages(stackup);
   stackup.config.gutter = 10;
   stackup.restack();

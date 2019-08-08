@@ -1,20 +1,12 @@
-import {
-  StringUtil,
-} from '@nekobird/rocket';
+import { StringUtil } from '@nekobird/rocket';
 
-import {
-  StackUp,
-  StackUpItem,
-} from './stack-up';
+import { StackUp, StackUpItem } from './stack-up';
 
-import {
-  StackUpConfig,
-} from './stack-up-config';
+import { StackUpConfig } from './stack-up-config';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';
 
 export class StackUpLayout {
-
   public stackUp: StackUp;
   public layoutOption: StackUpLayoutOption;
 
@@ -32,15 +24,14 @@ export class StackUpLayout {
     for (let i = 0; i < this.stackUp.numberOfColumns; i++) {
       if (this.layoutOption === 'ordinal') {
         this.stack[i] = 0;
-      } else if (this.layoutOption === 'optimized') { 
+      } else if (this.layoutOption === 'optimized') {
         this.stack[i] = [i, 0];
       }
     }
   }
 
   public loop() {
-    for (let i = 0; i < this.stackUp.items.length; i++)
-      this.plot(i);
+    for (let i = 0; i < this.stackUp.items.length; i++) this.plot(i);
   }
 
   public plot(itemIndex: number) {
@@ -65,8 +56,7 @@ export class StackUpLayout {
 
     this.columnPointer++;
 
-    if (this.columnPointer >= this.stackUp.numberOfColumns)
-      this.columnPointer = 0;
+    if (this.columnPointer >= this.stackUp.numberOfColumns) this.columnPointer = 0;
   }
 
   private plotOptimized(itemIndex: number) {
@@ -90,7 +80,6 @@ export class StackUpLayout {
 
     this.columnPointer++;
 
-    if (this.columnPointer >= this.stackUp.numberOfColumns)
-      this.columnPointer = 0;
+    if (this.columnPointer >= this.stackUp.numberOfColumns) this.columnPointer = 0;
   }
 }
