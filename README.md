@@ -1,6 +1,6 @@
 # 🏗 stack-up
 
-A simple, yet powerful, script to help you neatly stack fixed width and variable height elements.
+A simple, yet powerful, layout library to help you neatly stack fixed width and variable height elements.
 
 Powered by [@nekobird/rocket](https://github.com/nekobird/rocket).
 
