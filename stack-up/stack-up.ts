@@ -1,4 +1,10 @@
-import { DOMOffset, DOMStyle, DOMUtil, Util, Viewport } from '@nekobird/rocket';
+import {
+  DOMOffset,
+  DOMStyle,
+  DOMUtil,
+  Util,
+  Viewport,
+} from '@nekobird/rocket';
 
 import {
   STACKUP_DEFAULT_CONFIG,
@@ -6,20 +12,27 @@ import {
   StackUpContainerScaleData,
 } from './stack-up-config';
 
-import { StackUpLayout } from './stack-up-layout';
+import {
+  StackUpLayout,
+} from './stack-up-layout';
 
 export interface StackUpItem {
   item: HTMLElement;
+
   left: number;
   top: number;
+
   height: number;
+
   currentLeft: number;
   currentTop: number;
+
   requireMove: boolean;
 }
 
 export class StackUp {
   public config: StackUpConfig;
+
   public layout: StackUpLayout;
 
   public containerElement?: HTMLElement;
@@ -113,35 +126,49 @@ export class StackUp {
   }
 
   private boundaryUpdate(): this {
-    if (this.config.boundary !== window && DOMUtil.isHTMLElement(this.config.boundary) === true) {
+    if (
+      this.config.boundary !== window
+      && DOMUtil.isHTMLElement(this.config.boundary) === true
+    ) {
       const boundary = this.config.boundary as HTMLElement;
-      let horizontal = 0,
-        vertical = 0;
+
+      let horizontal = 0;
+      let vertical = 0;
+
       if (DOMStyle.getStyleValue(boundary, 'boxSizing') === 'border-box') {
         const horizontalBorderWidths = DOMStyle.getHorizontalBorderWidths(boundary);
         const horizontalPaddings = DOMStyle.getHorizontalPaddings(boundary);
+
         const verticalBorderWidths = DOMStyle.getVerticalBorderWidths(boundary);
         const verticalPaddings = DOMStyle.getVerticalPaddings(boundary);
+
         horizontal = horizontalBorderWidths + horizontalPaddings;
         vertical = verticalBorderWidths + verticalPaddings;
       }
+
       this.boundaryWidth = boundary.offsetWidth - horizontal;
       this.boundaryHeight = boundary.offsetHeight - vertical;
     } else {
       this.boundaryWidth = Viewport.width;
       this.boundaryHeight = Viewport.height;
     }
+
     return this;
   }
 
   private resizeDebounce = (fn: Function, delay: number): void => {
     clearTimeout(this.resizeDebounceTimeout);
+
     this.resizeDebounceTimeout = window.setTimeout(fn, delay);
   };
 
   private eventHandlerResizeComplete = (): void => {
-    if (this.calculateNumberOfColumns() !== this.numberOfColumns && this.config.isFluid === true)
+    if (
+      this.calculateNumberOfColumns() !== this.numberOfColumns
+      && this.config.isFluid === true
+    ) {
       this.restack();
+    }
   };
 
   private eventHandlerResize = (event: Event): void => {
@@ -155,9 +182,11 @@ export class StackUp {
   public updatePreviousContainerSize(): this {
     if (DOMUtil.isHTMLElement(this.containerElement) === true) {
       const containerElement = this.containerElement as HTMLElement;
+
       this.previousContainerWidth = containerElement.offsetWidth;
       this.previousContainerHeight = containerElement.offsetHeight;
     }
+
     return this;
   }
 
@@ -165,8 +194,12 @@ export class StackUp {
 
   private appendItem(item: HTMLElement): boolean {
     if (DOMUtil.isHTMLElement(this.containerElement) === true) {
-      const { x: left, y: top } = DOMOffset.getElementOffsetFrom(item, this
-        .containerElement as HTMLElement);
+      const containerElement = this.containerElement as HTMLElement;
+
+      const offset = DOMOffset.getElementOffsetFrom(item, containerElement);
+
+      const { x: left, y: top } = offset;
+
       this.items.push({
         item,
         left,
@@ -176,8 +209,10 @@ export class StackUp {
         currentTop: top,
         requireMove: false,
       });
+
       return true;
     }
+
     return false;
   }
 
@@ -187,10 +222,14 @@ export class StackUp {
     this.items = [];
     if (Array.isArray(this.itemElements) === true) {
       const itemElements = this.itemElements as HTMLElement[];
+
       itemElements.forEach(item => {
-        if (DOMUtil.isHTMLElement(item) === true) this.appendItem(item);
+        if (DOMUtil.isHTMLElement(item) === true) {
+          this.appendItem(item);
+        }
       });
     }
+
     return this;
   }
 
@@ -205,9 +244,13 @@ export class StackUp {
       numberOfColumns = this.config.numberOfColumns;
     }
 
-    if (numberOfColumns > this.items.length) numberOfColumns = this.items.length;
+    if (numberOfColumns > this.items.length) {
+      numberOfColumns = this.items.length;
+    }
 
-    if (this.items.length === 0 || numberOfColumns <= 0) numberOfColumns = 1;
+    if (this.items.length === 0 || numberOfColumns <= 0) {
+      numberOfColumns = 1;
+    }
 
     return numberOfColumns;
   }
@@ -215,12 +258,16 @@ export class StackUp {
   // Update numberOfColumns (3) - stack
   private updateNumberOfColumns(): this {
     this.numberOfColumns = this.calculateNumberOfColumns();
+
     return this;
   }
 
   // Scale container and move items (5) - stack
   public async draw(): Promise<void> {
-    if (this.isTransitioning === false && DOMUtil.isHTMLElement(this.containerElement) === true) {
+    if (
+      this.isTransitioning === false
+      && DOMUtil.isHTMLElement(this.containerElement) === true
+    ) {
       const containerElement = this.containerElement as HTMLElement;
 
       this.isTransitioning = true;
@@ -231,25 +278,38 @@ export class StackUp {
       const finalWidth = this.containerWidth + this.config.gutter;
 
       let containerScaleData = this.composeContainerScaleData(finalWidth, finalHeight);
+
       this.prepareItemsBeforeMove();
+
       try {
         await this.config.beforeTransition(containerScaleData, this.items, this);
+
         await this.config.scaleContainerInitial(containerElement, containerScaleData, this);
+
         await this.config.beforeMove(this.items, this);
+
         await this.moveItems();
+
         await this.config.afterMove(this.items, this);
+
         this.updatePreviousContainerSize();
+
         containerScaleData = this.composeContainerScaleData(finalWidth, finalHeight);
+
         await this.config.scaleContainerFinal(containerElement, containerScaleData, this);
+
         this.endTransition();
+
         return Promise.resolve();
       } catch {
         this.endTransition();
+
         return Promise.reject(
           new Error('@nekobird/stack-up: StackUp.draw: Fail to transition items and container.'),
         );
       }
     }
+
     return Promise.resolve();
   }
 
@@ -257,49 +317,63 @@ export class StackUp {
     const moveItem: (item: StackUpItem) => Promise<void> = item => {
       return this.config.moveItem(item, this);
     };
+
     if (this.config.moveInSequence === true) {
       return Util.promiseEach<StackUpItem>(this.items, moveItem);
     } else {
       const moveItems: Promise<void>[] = [];
+
       this.items.forEach(item => {
         moveItems.push(moveItem(item));
       });
+
       return Promise.all(moveItems).then(() => Promise.resolve());
     }
   }
 
   private endTransition(): this {
     this.updateItemsCurrentOffset();
+
     this.isTransitioning = false;
+
     this.config.afterTransition();
+
     if (typeof this.doneTransitioning === 'function') {
       this.doneTransitioning();
+
       this.doneTransitioning = undefined;
     }
+
     return this;
   }
 
   private composeContainerScaleData(width: number, height: number): StackUpContainerScaleData {
     const maxWidth = Math.max(this.previousContainerWidth, width);
     const maxHeight = Math.max(this.previousContainerHeight, height);
-    const requireScale =
-      this.previousContainerWidth !== width || this.previousContainerHeight !== height;
+
+    const requireScale = this.previousContainerWidth !== width || this.previousContainerHeight !== height;
+
     return {
       width,
       height,
+
       currentWidth: this.previousContainerWidth,
       currentHeight: this.previousContainerHeight,
+
       maxWidth,
       maxHeight,
+
       requireScale,
     };
   }
 
   private prepareItemsBeforeMove(): this {
     this.items.forEach(item => {
-      const requireMove: boolean = item.currentLeft !== item.left || item.currentTop !== item.top;
+      const requireMove = item.currentLeft !== item.left || item.currentTop !== item.top;
+
       item.requireMove = requireMove;
     });
+
     return this;
   }
 
@@ -308,6 +382,7 @@ export class StackUp {
       item.currentLeft = item.left;
       item.currentTop = item.top;
     });
+
     return this;
   }
 
@@ -316,13 +391,19 @@ export class StackUp {
 
   private applyLayout(): this {
     this.layout.setup();
-    if (this.items.length) this.layout.loop();
+
+    if (this.items.length) {
+      this.layout.loop();
+    }
+
     return this;
   }
 
   private resetLayout(): this {
     this.containerHeight = 0;
+
     this.layout.columnPointer = 0;
+
     return this;
   }
 
@@ -331,9 +412,11 @@ export class StackUp {
       const append = () => {
         if (Array.isArray(items) === true) {
           items = items as HTMLElement[];
+
           items.forEach(item => {
             if (DOMUtil.isHTMLElement(item) === true) {
               const itemIndex = this.items.length;
+
               if (this.appendItem(item) === true) {
                 this.layout.plot(itemIndex);
               } else {
@@ -354,6 +437,7 @@ export class StackUp {
         } else {
           if (DOMUtil.isHTMLElement(items) === true) {
             const itemIndex = this.items.length;
+
             if (this.appendItem(items as HTMLElement) === true) {
               this.layout.plot(itemIndex);
             } else {
@@ -371,6 +455,7 @@ export class StackUp {
             );
           }
         }
+
         this.draw()
           .then(() => resolve())
           .catch(() => reject());
@@ -391,13 +476,17 @@ export class StackUp {
       const reset = () => {
         this.containerWidth = 0;
         this.containerHeight = 0;
+
         this.items = [];
+
         this.getElements()
           .populateItems()
           .resetLayout()
           .restack();
+
         resolve();
       };
+
       if (this.isTransitioning === true) {
         this.doneTransitioning = reset;
       } else {
@@ -413,8 +502,10 @@ export class StackUp {
           .resetLayout()
           .applyLayout()
           .draw();
+
         resolve();
       };
+ 
       if (this.isTransitioning === true) {
         this.doneTransitioning = restack;
       } else {

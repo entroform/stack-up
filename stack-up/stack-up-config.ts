@@ -1,14 +1,20 @@
-import { StackUp, StackUpItem } from './stack-up';
+import {
+  StackUp,
+  StackUpItem,
+} from './stack-up';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';
 
 export interface StackUpContainerScaleData {
   width: number;
   height: number;
+
   currentWidth: number;
   currentHeight: number;
+
   maxWidth: number;
   maxHeight: number;
+
   requireScale: boolean;
 }
 
@@ -35,6 +41,7 @@ export interface StackUpConfig {
     items: StackUpItem[],
     stackup: StackUp,
   ) => Promise<void>;
+
   afterTransition: () => void;
 
   scaleContainerInitial: (
@@ -42,6 +49,7 @@ export interface StackUpConfig {
     data: StackUpContainerScaleData,
     stackup: StackUp,
   ) => Promise<void>;
+
   scaleContainerFinal: (
     container: HTMLElement,
     data: StackUpContainerScaleData,
