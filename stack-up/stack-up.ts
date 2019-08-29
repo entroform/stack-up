@@ -1,4 +1,5 @@
 import {
+  DOMBoxModel,
   DOMOffset,
   DOMStyle,
   DOMUtil,
@@ -57,14 +58,20 @@ export class StackUp {
   private doneTransitioning?: Function;
 
   constructor(config?: Partial<StackUpConfig>) {
-    this.config = Object.assign({}, STACKUP_DEFAULT_CONFIG);
+    this.config = {...STACKUP_DEFAULT_CONFIG};
+
     this.setConfig(config);
+
     this.layout = new StackUpLayout(this, this.config.layout);
+
     return this;
   }
 
   public setConfig(config?: Partial<StackUpConfig>): this {
-    if (typeof config === 'object') Object.assign(this.config, config);
+    if (typeof config === 'object') {
+      Object.assign(this.config, config);
+    }
+
     return this;
   }
 
@@ -95,33 +102,37 @@ export class StackUp {
 
   private getElements(): this {
     this.getContainerElement();
+
     this.getItemElements();
+
     return this;
   }
 
   private getContainerElement(): this {
     const containerElement = this.config.getContainerElement();
-    if (containerElement === null) {
-      throw new Error(
-        '@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.',
-      );
+
+    if (DOMUtil.isHTMLElement(containerElement) === true) {
+      this.containerElement = containerElement as HTMLElement;
     } else {
-      this.containerElement = containerElement;
+      throw new Error('@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.');
     }
+
     return this;
   }
 
   private getItemElements(): this {
     const itemElements = this.config.getItemElements();
+
     if (itemElements === null) {
       throw new Error('@nekobird/stack-up: StackUp.getItemElements: Fail to get item elements.');
     } else {
       if (Array.isArray(itemElements) === true) {
         this.itemElements = itemElements as HTMLElement[];
       } else {
-        this.itemElements = Array.from(itemElements);
+        this.itemElements = [...itemElements];
       }
     }
+
     return this;
   }
 
@@ -136,11 +147,11 @@ export class StackUp {
       let vertical = 0;
 
       if (DOMStyle.getStyleValue(boundary, 'boxSizing') === 'border-box') {
-        const horizontalBorderWidths = DOMStyle.getHorizontalBorderWidths(boundary);
-        const horizontalPaddings = DOMStyle.getHorizontalPaddings(boundary);
+        const horizontalBorderWidths = DOMBoxModel.getTotalHorizontalBorderWidths(boundary);
+        const horizontalPaddings = DOMBoxModel.getTotalHorizontalPaddings(boundary);
 
-        const verticalBorderWidths = DOMStyle.getVerticalBorderWidths(boundary);
-        const verticalPaddings = DOMStyle.getVerticalPaddings(boundary);
+        const verticalBorderWidths = DOMBoxModel.getTotalVerticalBorderWidths(boundary);
+        const verticalPaddings = DOMBoxModel.getTotalVerticalPaddings(boundary);
 
         horizontal = horizontalBorderWidths + horizontalPaddings;
         vertical = verticalBorderWidths + verticalPaddings;
@@ -196,9 +207,9 @@ export class StackUp {
     if (DOMUtil.isHTMLElement(this.containerElement) === true) {
       const containerElement = this.containerElement as HTMLElement;
 
-      const offset = DOMOffset.getElementOffsetFrom(item, containerElement);
+      const offset = DOMOffset.getElementOffsetFromAnotherElement(item, containerElement);
 
-      const { x: left, y: top } = offset;
+      const { left, top } = offset;
 
       this.items.push({
         item,
@@ -421,16 +432,12 @@ export class StackUp {
                 this.layout.plot(itemIndex);
               } else {
                 reject(
-                  new Error(
-                    '@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.',
-                  ),
+                  new Error('@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.')
                 );
               }
             } else {
               reject(
-                new Error(
-                  '@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.',
-                ),
+                new Error('@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.')
               );
             }
           });
@@ -442,16 +449,12 @@ export class StackUp {
               this.layout.plot(itemIndex);
             } else {
               reject(
-                new Error(
-                  '@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.',
-                ),
+                new Error('@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.')
               );
             }
           } else {
             reject(
-              new Error(
-                '@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.',
-              ),
+              new Error('@nekobird/stack-up: StackUp.append: item is undefined or not HTMLElement.')
             );
           }
         }
