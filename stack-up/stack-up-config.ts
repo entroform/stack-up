@@ -39,7 +39,7 @@ export interface StackUpConfig {
 
   isFluid: boolean;
 
-  debounceResizeWait: number;
+  resizeDebounceDelayInSeconds: number;
 
   moveInSequence: boolean;
 
@@ -65,9 +65,20 @@ export interface StackUpConfig {
     stackup: StackUp,
   ) => Promise<void>;
 
-  beforeMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
-  moveItem: (item: StackUpItem, stackup: StackUp) => Promise<void>;
-  afterMove: (items: StackUpItem[], stackup: StackUp) => Promise<void>;
+  beforeMove: (
+    items: StackUpItem[],
+    stackup: StackUp,
+  ) => Promise<void>;
+
+  moveItem: (
+    item: StackUpItem,
+    stackup: StackUp,
+  ) => Promise<void>;
+
+  afterMove: (
+    items: StackUpItem[],
+    stackup: StackUp,
+  ) => Promise<void>;
 }
 
 export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
@@ -77,18 +88,23 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   getItemElements: () => null,
 
   columnWidth: 320,
+
   numberOfColumns: 3,
+
   gutter: 20,
 
   layout: 'ordinal',
+
   isFluid: true,
 
-  debounceResizeWait: 350,
+  resizeDebounceDelayInSeconds: 0.35,
+
   moveInSequence: false,
 
   beforeInitialize: () => Promise.resolve(),
 
   beforeTransition: () => Promise.resolve(),
+
   afterTransition: () => {},
 
   scaleContainerInitial: (container, { width, height }) => {
@@ -96,6 +112,7 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
     container.style.height = `${height}px`;
     return Promise.resolve();
   },
+
   scaleContainerFinal: (container, { width, height }) => {
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
@@ -103,10 +120,12 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   },
 
   beforeMove: () => Promise.resolve(),
+
   moveItem: ({ item, left, top }) => {
     item.style.left = `${left}px`;
     item.style.top = `${top}px`;
     return Promise.resolve();
   },
+
   afterMove: () => Promise.resolve(),
 };
