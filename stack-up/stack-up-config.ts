@@ -1,4 +1,8 @@
 import {
+  HTMLElements,
+} from '@nekobird/rocket';
+
+import {
   StackUp,
   StackUpItem,
 } from './stack-up';
@@ -22,16 +26,21 @@ export interface StackUpConfig {
   boundary: HTMLElement | Window;
 
   getContainerElement: () => HTMLElement | null;
-  getItemElements: () => NodeListOf<HTMLElement> | HTMLElement[] | null;
+
+  getItemElements: () => HTMLElements | null;
 
   columnWidth: number;
+
   numberOfColumns: number;
+
   gutter: number;
 
   layout: StackUpLayoutOption;
+
   isFluid: boolean;
 
   debounceResizeWait: number;
+
   moveInSequence: boolean;
 
   beforeInitialize: (stackup: StackUp) => Promise<void>;

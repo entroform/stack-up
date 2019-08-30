@@ -101,27 +101,27 @@ export class StackUp {
 
   private getContainerElement(): this {
     const containerElement = this.config.getContainerElement();
-    if (containerElement === null) {
+
+    if (DOMUtil.isHTMLElement(containerElement) === true) {
+      this.containerElement = containerElement as HTMLElement;
+    } else {
       throw new Error(
         '@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.',
       );
-    } else {
-      this.containerElement = containerElement;
     }
+
     return this;
   }
 
   private getItemElements(): this {
     const itemElements = this.config.getItemElements();
+
     if (itemElements === null) {
       throw new Error('@nekobird/stack-up: StackUp.getItemElements: Fail to get item elements.');
     } else {
-      if (Array.isArray(itemElements) === true) {
-        this.itemElements = itemElements as HTMLElement[];
-      } else {
-        this.itemElements = Array.from(itemElements);
-      }
+      this.itemElements = DOMUtil.toHTMLElementArray(itemElements);
     }
+
     return this;
   }
 
