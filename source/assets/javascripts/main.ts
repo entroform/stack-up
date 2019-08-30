@@ -1,6 +1,10 @@
-import { DOMImage } from '@nekobird/rocket';
+import {
+  DOMImage,
+} from '@nekobird/rocket';
 
-import { StackUp } from '../../../stack-up/stack-up';
+import {
+  StackUp,
+} from '../../../stack-up/stack-up';
 
 const containerElement = document.getElementById('container');
 
@@ -13,11 +17,14 @@ const images = [
 
 const loadImages = stackup => {
   images.forEach(source => {
-    DOMImage.loadImage(source).then(payload => {
+    DOMImage.loadImageFromSource(source).then(payload => {
       const item = document.createElement('DIV');
+
       item.classList.add('item');
       item.appendChild(payload.image);
+
       containerElement.appendChild(item);
+
       stackup.append(item).catch(error => console.error(error));
     });
   });
@@ -26,18 +33,19 @@ const loadImages = stackup => {
 const stackup: StackUp = new StackUp({
   beforeInitialize: () => {
     const images = containerElement.querySelectorAll('img');
+
     const promises = [];
+
     images.forEach(img => {
-      promises.push(DOMImage.loadImage(img.src));
+      promises.push(DOMImage.loadImageFromSource(img.src));
     });
+
     return Promise.all(promises).then(() => Promise.resolve());
   },
-  getContainerElement: () => {
-    return document.getElementById('container');
-  },
-  getItemElements: () => {
-    return document.querySelectorAll('.item');
-  },
+
+  getContainerElement: () => document.getElementById('container'),
+
+  getItemElements: () => document.querySelectorAll('.item'),
 
   layout: 'optimized',
   moveInSequence: false,
@@ -47,24 +55,28 @@ const stackup: StackUp = new StackUp({
   boundary: window,
 
   scaleContainerInitial: (container, data) => {
-    console.log(data);
     if (data.requireScale === true) {
       container.style.width = `${data.width}px`;
       container.style.height = `${data.height}px`;
     }
+
     return Promise.resolve();
   },
+
   moveItem: data => {
     if (data.requireMove === true) {
       data.item.style.left = `${data.left}px`;
       data.item.style.top = `${data.top}px`;
     }
+
     return Promise.resolve();
   },
 });
 
 stackup.initialize().then(() => {
   loadImages(stackup);
+
   stackup.config.gutter = 10;
+
   stackup.restack();
 });
