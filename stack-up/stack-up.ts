@@ -36,8 +36,8 @@ export class StackUp {
 
   public layout: StackUpLayout;
 
-  public containerElement?: HTMLElement;
-  public itemElements?: HTMLElement[];
+  public containerElement: HTMLElement | null = null;
+  public itemElements: HTMLElement[] | null = null;
 
   public boundaryHeight: number = 0;
   public boundaryWidth: number = 0;
@@ -143,7 +143,7 @@ export class StackUp {
       let horizontal = 0;
       let vertical = 0;
 
-      if (DOMStyle.getStyleValue(boundary, 'boxSizing') === 'border-box') {
+      if (DOMStyle.getBoxSizing(boundary) === 'border-box') {
         const horizontalBorderWidths = DOMBoxModel.getTotalHorizontalBorderWidths(boundary);
         const horizontalPaddings = DOMBoxModel.getTotalHorizontalPaddings(boundary);
 
@@ -235,9 +235,7 @@ export class StackUp {
     if (Array.isArray(this.itemElements) === true) {
       const itemElements = this.itemElements as HTMLElement[];
 
-      itemElements.forEach(item => {
-        this.appendItem(item);
-      });
+      itemElements.forEach(item => this.appendItem(item));
     }
 
     return this;
