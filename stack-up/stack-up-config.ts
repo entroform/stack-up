@@ -85,6 +85,7 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   boundary: window,
 
   getContainerElement: () => null,
+
   getItemElements: () => null,
 
   columnWidth: 320,
@@ -110,12 +111,14 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   scaleContainerInitial: (container, { width, height }) => {
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
+
     return Promise.resolve();
   },
 
   scaleContainerFinal: (container, { width, height }) => {
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
+
     return Promise.resolve();
   },
 
@@ -124,6 +127,7 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   moveItem: ({ item, left, top }) => {
     item.style.left = `${left}px`;
     item.style.top = `${top}px`;
+
     return Promise.resolve();
   },
 
