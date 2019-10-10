@@ -449,8 +449,8 @@ export class StackUp {
         }
 
         this.draw()
-          .then(() => resolve())
-          .catch(() => reject());
+            .then(() => resolve())
+            .catch(() => reject());
       };
 
       if (this.isTransitioning === true) {
@@ -472,9 +472,9 @@ export class StackUp {
         this.items = [];
 
         this.getElements()
-          .populateItems()
-          .resetLayout()
-          .restack();
+            .populateItems()
+            .resetLayout()
+            .restack();
 
         resolve();
       };
@@ -491,9 +491,9 @@ export class StackUp {
     return new Promise(resolve => {
       const restack = () => {
         this.updateNumberOfColumns()
-          .resetLayout()
-          .applyLayout()
-          .draw();
+            .resetLayout()
+            .applyLayout()
+            .draw();
 
         resolve();
       };
@@ -504,5 +504,11 @@ export class StackUp {
         restack();
       }
     });
+  }
+
+  public updateElements(): this {
+    this.getElements();
+
+    return this;
   }
 }
