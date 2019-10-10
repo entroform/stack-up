@@ -1,6 +1,6 @@
 {
   "name": "@nekobird/stack-up",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "homepage": "https://github.com/nekobird/stack-up#readme",
   "bugs": {
@@ -22,7 +22,7 @@
     "build-docs": "rm -r ./docs; npx parcel build ./source/index.html --out-dir docs --public-url ./",
     "clean": "rm -r dist; rm -r build; rm -r .cache",
     "prepare": "npm run build",
-    "start": "parcel ./source/index.html",
+    "start": "npx parcel ./source/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
