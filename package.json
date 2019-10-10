@@ -1,6 +1,6 @@
 {
   "name": "@nekobird/stack-up",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "homepage": "https://github.com/nekobird/stack-up#readme",
   "bugs": {
