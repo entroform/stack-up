@@ -112,7 +112,7 @@ export class StackUp {
   private getContainerElement(): this {
     const containerElement = this.config.getContainerElement();
 
-    if (DOMUtil.isHTMLElement(containerElement) === true) {
+    if (DOMUtil.isHTMLElement(containerElement)) {
       this.containerElement = containerElement as HTMLElement;
     } else {
       throw new Error('@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.');
@@ -124,7 +124,7 @@ export class StackUp {
   private getItemElements(): this {
     const itemElements = this.config.getItemElements();
 
-    if (itemElements === null) {
+    if (!itemElements) {
       throw new Error('@nekobird/stack-up: StackUp.getItemElements: Fail to get item elements.');
     } else {
       this.itemElements = DOMUtil.toHTMLElementArray(itemElements);
@@ -136,7 +136,7 @@ export class StackUp {
   private boundaryUpdate(): this {
     if (
       this.config.boundary !== window
-      && DOMUtil.isHTMLElement(this.config.boundary) === true
+      && DOMUtil.isHTMLElement(this.config.boundary)
     ) {
       const boundary = this.config.boundary as HTMLElement;
 
@@ -173,7 +173,7 @@ export class StackUp {
   private eventHandlerResizeComplete = (): void => {
     if (
       this.calculateNumberOfColumns() !== this.numberOfColumns
-      && this.config.isFluid === true
+      && this.config.isFluid
     ) {
       this.restack();
     }
@@ -191,7 +191,7 @@ export class StackUp {
   // Required stack-up.initialize to be called first.
 
   public updatePreviousContainerSize(): this {
-    if (DOMUtil.isHTMLElement(this.containerElement) === true) {
+    if (DOMUtil.isHTMLElement(this.containerElement)) {
       const containerElement = this.containerElement as HTMLElement;
 
       this.previousContainerWidth = containerElement.offsetWidth;
@@ -204,7 +204,7 @@ export class StackUp {
   // This only updates this.items, it does not update the selectors
 
   private appendItem(item: HTMLElement): boolean {
-    if (DOMUtil.isHTMLElement(this.containerElement) === true) {
+    if (DOMUtil.isHTMLElement(this.containerElement)) {
       const containerElement = this.containerElement as HTMLElement;
 
       const offset = DOMOffset.getElementOffsetFromAnotherElement(item, containerElement);
@@ -229,10 +229,10 @@ export class StackUp {
 
   // Populate grid items (2) - reset
   private populateItems(): this {
-    // Clear items before populating
+    // Clear items before populating.
     this.items = [];
 
-    if (Array.isArray(this.itemElements) === true) {
+    if (Array.isArray(this.itemElements)) {
       const itemElements = this.itemElements as HTMLElement[];
 
       itemElements.forEach(item => this.appendItem(item));
@@ -242,25 +242,27 @@ export class StackUp {
   }
 
   private calculateNumberOfColumns(): number {
-    let numberOfColumns: number;
+    const { columnWidth, gutter, isFluid, numberOfColumns } = this.config;
 
-    if (this.config.isFluid === true) {
-      numberOfColumns = Math.floor(
-        (this.boundaryWidth - this.config.gutter) / (this.config.columnWidth + this.config.gutter),
+    let calculatedNumberOfColumns: number;
+
+    if (isFluid === true) {
+      calculatedNumberOfColumns = Math.floor(
+        (this.boundaryWidth - gutter) / (columnWidth + gutter),
       );
     } else {
-      numberOfColumns = this.config.numberOfColumns;
+      calculatedNumberOfColumns = numberOfColumns;
     }
 
-    if (numberOfColumns > this.items.length) {
-      numberOfColumns = this.items.length;
+    if (calculatedNumberOfColumns > this.items.length) {
+      calculatedNumberOfColumns = this.items.length;
     }
 
-    if (this.items.length === 0 || numberOfColumns <= 0) {
-      numberOfColumns = 1;
+    if (this.items.length === 0 || calculatedNumberOfColumns <= 0) {
+      calculatedNumberOfColumns = 1;
     }
 
-    return numberOfColumns;
+    return calculatedNumberOfColumns;
   }
 
   // Update numberOfColumns (3) - stack
@@ -273,8 +275,8 @@ export class StackUp {
   // Scale container and move items (5) - stack
   public async draw(): Promise<void> {
     if (
-      this.isTransitioning === false
-      && DOMUtil.isHTMLElement(this.containerElement) === true
+      !this.isTransitioning
+      && DOMUtil.isHTMLElement(this.containerElement)
     ) {
       const containerElement = this.containerElement as HTMLElement;
 
@@ -322,20 +324,21 @@ export class StackUp {
   }
 
   private moveItems(): Promise<void> {
-    const moveItem: (item: StackUpItem) => Promise<void> = item => {
-      return this.config.moveItem(item, this);
-    };
+    const { moveInSequence } = this.config;
 
-    if (this.config.moveInSequence === true) {
+    const moveItem: (item: StackUpItem) => Promise<void> = item => (
+      this.config.moveItem(item, this)
+    );
+
+    if (moveInSequence) {
       return Util.promiseEach<StackUpItem>(this.items, moveItem);
     } else {
       const moveItems: Promise<void>[] = [];
 
-      this.items.forEach(item => {
-        moveItems.push(moveItem(item));
-      });
+      this.items.forEach(item => moveItems.push(moveItem(item)));
 
-      return Promise.all(moveItems).then(() => Promise.resolve());
+      return Promise.all(moveItems)
+        .then(() => Promise.resolve());
     }
   }
 
@@ -508,6 +511,12 @@ export class StackUp {
 
   public updateElements(): this {
     this.getElements();
+
+    return this;
+  }
+
+  public destroy(): this {
+    window.removeEventListener('resize', this.eventHandlerResize);
 
     return this;
   }
