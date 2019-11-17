@@ -15,7 +15,7 @@
   "files": [
     "build/**/*"
   ],
-  "sideEffects": true,
+  "sideEffects": false,
   "main": "build/commonjs/stack-up.js",
   "module": "build/esm/stack-up.js",
   "types": "build/types/stack-up.d.ts",
