@@ -15,10 +15,12 @@
   "files": [
     "build/**/*"
   ],
-  "main": "build/stack-up.js",
-  "types": "build/stack-up.d.ts",
+  "sideEffects": true,
+  "main": "build/commonjs/stack-up.js",
+  "module": "build/esm/stack-up.js",
+  "types": "build/types/stack-up.d.ts",
   "scripts": {
-    "build": "rm -r build; webpack --config webpack.config.js",
+    "build": "rollup --config rollup.config.js",
     "build-docs": "rm -r ./docs; npx parcel build ./source/index.html --out-dir docs --public-url ./",
     "clean": "rm -r dist; rm -r build; rm -r .cache",
     "prepublishOnly": "npm run build",
@@ -26,8 +28,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@nekobird/rocket": "0.0.132",
-    "@babel/runtime": "^7.7.2"
+    "@babel/runtime": "^7.7.2",
+    "@nekobird/rocket": "0.0.135"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -39,6 +41,14 @@
     "@types/jest": "^24.0.23",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
+    "rollup": "^1.27.0",
+    "rollup-plugin-alias": "^2.2.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-resolve": "0.0.1-predev.1",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript": "^1.0.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",

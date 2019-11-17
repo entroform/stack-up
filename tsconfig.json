@@ -11,12 +11,7 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "outDir": "build/",
-    "paths": {
-      "~/*": [
-        "stack-up/*"
-      ]
-    },
+    "outDir": "build/types",
     "preserveConstEnums": true,
     "removeComments": true,
     "resolveJsonModule": false,
