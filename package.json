@@ -1,6 +1,7 @@
 {
   "name": "@nekobird/stack-up",
   "version": "0.0.3",
+  "private": false,
   "description": "An efficient and optimized way of stacking fixed width, variable height elements.",
   "homepage": "https://github.com/nekobird/stack-up#readme",
   "bugs": {
@@ -18,17 +19,20 @@
   "sideEffects": false,
   "main": "build/commonjs/stack-up.js",
   "module": "build/esm/stack-up.js",
+  "jsnext:main": "build/esm/stack-up.js",
   "types": "build/types/stack-up.d.ts",
   "scripts": {
-    "build": "rollup --config rollup.config.js",
-    "build-docs": "rm -r ./docs; npx parcel build ./source/index.html --out-dir docs --public-url ./",
-    "clean": "rm -r dist; rm -r build; rm -r .cache",
+    "build": "npm run clean; rollup --config rollup.config.js",
+    "build:docs": "npm run clean; ",
+    "clean": "rimraf build dist docs",
     "prepublishOnly": "npm run build",
     "start": "npx parcel ./source/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.2",
+    "@nekobird/doko": "0.0.1",
+    "@nekobird/piko": "0.0.3",
     "@nekobird/rocket": "0.0.135"
   },
   "devDependencies": {
@@ -38,20 +42,17 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-typescript": "^7.7.2",
-    "@types/jest": "^24.0.23",
-    "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^3.0.0",
+    "rimraf": "^3.0.0",
     "rollup": "^1.27.0",
-    "rollup-plugin-alias": "^2.2.0",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-resolve": "0.0.1-predev.1",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript": "^1.0.1",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,11 +1,18 @@
 import {
-  DOMBoxModel,
-  DOMOffset,
-  DOMStyle,
-  DOMUtil,
-  Util,
+  promiseEach,
+} from '@nekobird/piko';
+
+import {
+  getBoxSizing,
+  getElementOffsetFromAnotherElement,
+  getTotalHorizontalBorderWidths,
+  getTotalHorizontalPaddings,
+  getTotalVerticalBorderWidths,
+  getTotalVerticalPaddings,
+  isHTMLElement,
+  toHTMLElementArray,
   Viewport,
-} from '@nekobird/rocket';
+} from '@nekobird/doko';
 
 import {
   STACKUP_DEFAULT_CONFIG,
@@ -112,7 +119,7 @@ export class StackUp {
   private getContainerElement(): this {
     const containerElement = this.config.getContainerElement();
 
-    if (DOMUtil.isHTMLElement(containerElement)) {
+    if (isHTMLElement(containerElement)) {
       this.containerElement = containerElement as HTMLElement;
     } else {
       throw new Error('@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.');
@@ -127,7 +134,7 @@ export class StackUp {
     if (!itemElements) {
       throw new Error('@nekobird/stack-up: StackUp.getItemElements: Fail to get item elements.');
     } else {
-      this.itemElements = DOMUtil.toHTMLElementArray(itemElements);
+      this.itemElements = toHTMLElementArray(itemElements);
     }
 
     return this;
@@ -136,19 +143,19 @@ export class StackUp {
   private boundaryUpdate(): this {
     if (
       this.config.boundary !== window
-      && DOMUtil.isHTMLElement(this.config.boundary)
+      && isHTMLElement(this.config.boundary)
     ) {
       const boundary = this.config.boundary as HTMLElement;
 
       let horizontal = 0;
       let vertical = 0;
 
-      if (DOMStyle.getBoxSizing(boundary) === 'border-box') {
-        const horizontalBorderWidths = DOMBoxModel.getTotalHorizontalBorderWidths(boundary);
-        const horizontalPaddings = DOMBoxModel.getTotalHorizontalPaddings(boundary);
+      if (getBoxSizing(boundary) === 'border-box') {
+        const horizontalBorderWidths = getTotalHorizontalBorderWidths(boundary);
+        const horizontalPaddings = getTotalHorizontalPaddings(boundary);
 
-        const verticalBorderWidths = DOMBoxModel.getTotalVerticalBorderWidths(boundary);
-        const verticalPaddings = DOMBoxModel.getTotalVerticalPaddings(boundary);
+        const verticalBorderWidths = getTotalVerticalBorderWidths(boundary);
+        const verticalPaddings = getTotalVerticalPaddings(boundary);
 
         horizontal = horizontalBorderWidths + horizontalPaddings;
         vertical = verticalBorderWidths + verticalPaddings;
@@ -191,7 +198,7 @@ export class StackUp {
   // Required stack-up.initialize to be called first.
 
   public updatePreviousContainerSize(): this {
-    if (DOMUtil.isHTMLElement(this.containerElement)) {
+    if (isHTMLElement(this.containerElement)) {
       const containerElement = this.containerElement as HTMLElement;
 
       this.previousContainerWidth = containerElement.offsetWidth;
@@ -204,10 +211,10 @@ export class StackUp {
   // This only updates this.items, it does not update the selectors
 
   private appendItem(item: HTMLElement): boolean {
-    if (DOMUtil.isHTMLElement(this.containerElement)) {
+    if (isHTMLElement(this.containerElement)) {
       const containerElement = this.containerElement as HTMLElement;
 
-      const offset = DOMOffset.getElementOffsetFromAnotherElement(item, containerElement);
+      const offset = getElementOffsetFromAnotherElement(item, containerElement);
 
       const { left, top } = offset;
 
@@ -276,7 +283,7 @@ export class StackUp {
   public async draw(): Promise<void> {
     if (
       !this.isTransitioning
-      && DOMUtil.isHTMLElement(this.containerElement)
+      && isHTMLElement(this.containerElement)
     ) {
       const containerElement = this.containerElement as HTMLElement;
 
@@ -331,14 +338,14 @@ export class StackUp {
     );
 
     if (moveInSequence) {
-      return Util.promiseEach<StackUpItem>(this.items, moveItem);
+      return promiseEach<StackUpItem>(this.items, moveItem);
     } else {
       const moveItems: Promise<void>[] = [];
 
       this.items.forEach(item => moveItems.push(moveItem(item)));
 
       return Promise.all(moveItems)
-        .then(() => Promise.resolve());
+                    .then(() => Promise.resolve());
     }
   }
 
@@ -380,9 +387,7 @@ export class StackUp {
 
   private prepareItemsBeforeMove(): this {
     this.items.forEach(item => {
-      const requireMove = item.currentLeft !== item.left || item.currentTop !== item.top;
-
-      item.requireMove = requireMove;
+      item.requireMove = item.currentLeft !== item.left || item.currentTop !== item.top;
     });
 
     return this;
@@ -425,7 +430,7 @@ export class StackUp {
           items = items as HTMLElement[];
 
           items.forEach(item => {
-            if (DOMUtil.isHTMLElement(item) === true) {
+            if (isHTMLElement(item) === true) {
               const itemIndex = this.items.length;
 
               if (this.appendItem(item) === true) {
@@ -438,7 +443,7 @@ export class StackUp {
             }
           });
         } else {
-          if (DOMUtil.isHTMLElement(items) === true) {
+          if (isHTMLElement(items) === true) {
             const itemIndex = this.items.length;
 
             if (this.appendItem(items as HTMLElement) === true) {

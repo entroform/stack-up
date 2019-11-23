@@ -2,28 +2,29 @@
   "compilerOptions": {
     "baseUrl": ".",
     "declaration": true,
+    "declarationDir": "./build/types/",
     "lib": [
       "dom.iterable",
       "dom",
-      "es6"
+      "esnext"
     ],
-    "module": "ES6",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "outDir": "build/types",
+    "outDir": "./build/",
+    "rootDir": ".",
     "preserveConstEnums": true,
     "removeComments": true,
     "resolveJsonModule": false,
     "sourceMap": true,
     "strict": true,
-    "target": "ES6",
+    "target": "esnext",
   },
   "include": [
-    "stack-up/*",
+    "./source/*"
   ],
   "exclude": [
-    "node_modules",
-    "source"
+    "node_modules"
   ]
 }

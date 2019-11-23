@@ -1,6 +1,6 @@
 import {
-  StringUtil,
-} from '@nekobird/rocket';
+  uppercaseFirstLetter,
+} from '@nekobird/piko';
 
 import {
   StackUp,
@@ -10,11 +10,8 @@ export type StackUpLayoutOption = 'ordinal' | 'optimized';
 
 export class StackUpLayout {
   public stackUp: StackUp;
-
   public layoutOption: StackUpLayoutOption;
-
   public columnPointer: number = 0;
-
   public stack;
 
   constructor(stackUp: StackUp, layoutOption: StackUpLayoutOption) {
@@ -44,7 +41,7 @@ export class StackUpLayout {
   }
 
   public plot(itemIndex: number) {
-    const layoutOption = StringUtil.uppercaseFirstLetter(this.layoutOption);
+    const layoutOption = uppercaseFirstLetter(this.layoutOption);
 
     this[`plot${layoutOption}`](itemIndex);
   }

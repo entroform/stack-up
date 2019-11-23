@@ -1,6 +1,6 @@
 import {
   HTMLElements,
-} from '@nekobird/rocket';
+} from '@nekobird/doko';
 
 import {
   StackUp,
@@ -26,21 +26,15 @@ export interface StackUpConfig {
   boundary: HTMLElement | Window;
 
   getContainerElement: () => HTMLElement | null;
-
   getItemElements: () => HTMLElements | null;
 
   columnWidth: number;
 
   numberOfColumns: number;
-
   gutter: number;
-
   layout: StackUpLayoutOption;
-
   isFluid: boolean;
-
   resizeDebounceDelayInSeconds: number;
-
   moveInSequence: boolean;
 
   beforeInitialize: (stackup: StackUp) => Promise<void>;
@@ -50,7 +44,7 @@ export interface StackUpConfig {
     items: StackUpItem[],
     stackup: StackUp,
   ) => Promise<void>;
-
+ 
   afterTransition: () => void;
 
   scaleContainerInitial: (

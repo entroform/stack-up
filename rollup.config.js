@@ -1,10 +1,11 @@
+import resolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import alias from 'rollup-plugin-alias';
-import pkg from './package.json';
 import { terser } from "rollup-plugin-terser";
-import resolve from 'rollup-plugin-node-resolve';
+
+import pkg from './package.json';
+
+const extensions = ['.js', '.ts'];
 
 export default {
   input: 'stack-up/stack-up.ts',
@@ -25,18 +26,21 @@ export default {
     },
   ],
   plugins: [
-    alias({
-      resolve: ['.ts'],
-    }),
     resolve({
-      extensions: ['.ts'],
+      mainFields: [
+        'module',
+        'jsnext',
+        'main'
+      ],
+      extensions,
     }),
-    typescript(),
+    typescript({
+      exclude: 'node_modules/**',
+    }),
     babel({
       exclude: 'node_modules/**',
-      extensions: ['.ts'],
+      extensions,
       runtimeHelpers: true,
     }),
-    commonjs(),
   ],
 }
