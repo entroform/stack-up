@@ -22,8 +22,9 @@
   "jsnext:main": "build/esm/stack-up.js",
   "types": "build/types/stack-up.d.ts",
   "scripts": {
-    "build": "npm run clean; rollup --config rollup.config.js",
+    "build": "npm run clean; npm run build:types; rollup --config rollup.config.js",
     "build:docs": "npm run clean; ",
+    "build:types": "tsc --emitDeclarationOnly --outDir build/types/",
     "clean": "rimraf build dist docs",
     "prepublishOnly": "npm run build",
     "start": "npx parcel ./source/index.html",
@@ -32,8 +33,7 @@
   "dependencies": {
     "@babel/runtime": "^7.7.2",
     "@nekobird/doko": "0.0.1",
-    "@nekobird/piko": "0.0.3",
-    "@nekobird/rocket": "0.0.135"
+    "@nekobird/piko": "0.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",

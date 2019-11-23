@@ -2,14 +2,12 @@
 
 A simple, yet powerful, layout library to help you neatly stack fixed width and variable height elements.
 
-Powered by [@nekobird/rocket](https://github.com/nekobird/rocket).
-
 ## Install
 
 Add **stack-up** to your project.
 
 ```
-npm install @nekobird/stack-up
+npm i @nekobird/stack-up
 ```
 
 ## Usage
