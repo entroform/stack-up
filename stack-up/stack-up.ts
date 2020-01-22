@@ -120,7 +120,7 @@ export class StackUp {
     const containerElement = this.config.getContainerElement();
 
     if (isHTMLElement(containerElement)) {
-      this.containerElement = containerElement as HTMLElement;
+      this.containerElement = containerElement;
     } else {
       throw new Error('@nekobird/stack-up: StackUp.getContainerElement: Fail to get container element.');
     }
@@ -344,8 +344,9 @@ export class StackUp {
 
       this.items.forEach(item => moveItems.push(moveItem(item)));
 
-      return Promise.all(moveItems)
-                    .then(() => Promise.resolve());
+      return Promise
+        .all(moveItems)
+        .then(() => Promise.resolve());
     }
   }
 
@@ -443,10 +444,10 @@ export class StackUp {
             }
           });
         } else {
-          if (isHTMLElement(items) === true) {
+          if (isHTMLElement(items)) {
             const itemIndex = this.items.length;
 
-            if (this.appendItem(items as HTMLElement) === true) {
+            if (this.appendItem(items as HTMLElement)) {
               this.layout.plot(itemIndex);
             } else {
               reject(new Error('@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.'));
@@ -456,9 +457,10 @@ export class StackUp {
           }
         }
 
-        this.draw()
-            .then(() => resolve())
-            .catch(() => reject());
+        this
+          .draw()
+          .then(() => resolve())
+          .catch(() => reject());
       };
 
       if (this.isTransitioning === true) {
@@ -474,15 +476,16 @@ export class StackUp {
   public reset(): Promise<void> {
     return new Promise(resolve => {
       const reset = () => {
-        this.containerWidth = 0;
+        this.containerWidth  = 0;
         this.containerHeight = 0;
 
         this.items = [];
 
-        this.getElements()
-            .populateItems()
-            .resetLayout()
-            .restack();
+        this
+          .getElements()
+          .populateItems()
+          .resetLayout()
+          .restack();
 
         resolve();
       };
@@ -498,10 +501,11 @@ export class StackUp {
   public restack(): Promise<void> {
     return new Promise(resolve => {
       const restack = () => {
-        this.updateNumberOfColumns()
-            .resetLayout()
-            .applyLayout()
-            .draw();
+        this
+          .updateNumberOfColumns()
+          .resetLayout()
+          .applyLayout()
+          .draw();
 
         resolve();
       };
