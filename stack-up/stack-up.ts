@@ -253,7 +253,7 @@ export class StackUp {
 
     let calculatedNumberOfColumns: number;
 
-    if (isFluid === true) {
+    if (isFluid) {
       calculatedNumberOfColumns = Math.floor(
         (this.boundaryWidth - gutter) / (columnWidth + gutter),
       );
@@ -427,14 +427,13 @@ export class StackUp {
   public append(items: HTMLElement | HTMLElement[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const append = () => {
-        if (Array.isArray(items) === true) {
-          items = items as HTMLElement[];
+        if (Array.isArray(items)) {
 
           items.forEach(item => {
-            if (isHTMLElement(item) === true) {
+            if (isHTMLElement(item)) {
               const itemIndex = this.items.length;
 
-              if (this.appendItem(item) === true) {
+              if (this.appendItem(item)) {
                 this.layout.plot(itemIndex);
               } else {
                 reject(new Error('@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.'));
@@ -447,7 +446,7 @@ export class StackUp {
           if (isHTMLElement(items)) {
             const itemIndex = this.items.length;
 
-            if (this.appendItem(items as HTMLElement)) {
+            if (this.appendItem(items)) {
               this.layout.plot(itemIndex);
             } else {
               reject(new Error('@nekobird/stack-up: StackUp.append: container element is undefined or not HTMLElement.'));
@@ -463,11 +462,9 @@ export class StackUp {
           .catch(() => reject());
       };
 
-      if (this.isTransitioning === true) {
-        this.doneTransitioning = append;
-      } else {
-        append();
-      }
+      this.isTransitioning
+        ? this.doneTransitioning = append
+        : append();
     });
   }
 
@@ -490,11 +487,9 @@ export class StackUp {
         resolve();
       };
 
-      if (this.isTransitioning === true) {
-        this.doneTransitioning = reset;
-      } else {
-        reset();
-      }
+      this.isTransitioning
+        ? this.doneTransitioning = reset
+        : reset()
     });
   }
 
@@ -510,11 +505,9 @@ export class StackUp {
         resolve();
       };
  
-      if (this.isTransitioning === true) {
-        this.doneTransitioning = restack;
-      } else {
-        restack();
-      }
+      this.isTransitioning
+        ? this.doneTransitioning = restack
+        : restack();
     });
   }
 

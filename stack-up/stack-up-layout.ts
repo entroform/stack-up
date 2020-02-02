@@ -3,7 +3,7 @@ import {
 } from '@nekobird/piko';
 
 import {
-  StackUp,
+  StackUp
 } from './stack-up';
 
 export type StackUpLayoutOption = 'ordinal' | 'optimized';

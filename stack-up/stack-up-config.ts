@@ -103,14 +103,14 @@ export const STACKUP_DEFAULT_CONFIG: StackUpConfig = {
   afterTransition: () => {},
 
   scaleContainerInitial: (container, { width, height }) => {
-    container.style.width = `${width}px`;
+    container.style.width  = `${width}px`;
     container.style.height = `${height}px`;
 
     return Promise.resolve();
   },
 
   scaleContainerFinal: (container, { width, height }) => {
-    container.style.width = `${width}px`;
+    container.style.width  = `${width}px`;
     container.style.height = `${height}px`;
 
     return Promise.resolve();
