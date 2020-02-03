@@ -23,7 +23,7 @@
   "types": "build/types/stack-up.d.ts",
   "scripts": {
     "build": "npm run clean; npm run build:types; rollup --config rollup.config.js",
-    "build:docs": "npm run clean; ",
+    "build:docs": "npm run clean;",
     "build:types": "tsc --emitDeclarationOnly --outDir build/types/",
     "clean": "rimraf build dist docs",
     "prepublishOnly": "npm run build",
@@ -33,7 +33,8 @@
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "@nekobird/doko": "0.0.2",
-    "@nekobird/piko": "0.0.11"
+    "@nekobird/piko": "0.0.11",
+    "@nekobird/rocket": "0.0.135"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -42,13 +43,16 @@
     "@babel/polyfill": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-typescript": "^7.8.3",
+    "autoprefixer": "^9.7.4",
     "rimraf": "^3.0.1",
     "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-resolve": "0.0.1-predev.1",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
+    "sass": "^1.25.0",
     "tslib": "^1.10.0",
     "typescript": "^3.7.5"
   },
